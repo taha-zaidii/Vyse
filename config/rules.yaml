@@ -1,0 +1,44 @@
+# Vyse — Temporal Rule Definitions
+# Each rule fires when `min_occurrences` matching DetectionEvents arrive within
+# `window_seconds`, subject to a per-rule cooldown. The Risk Agent scopes rules
+# by (camera, zone, track_id), so rules apply per worker, not per frame.
+
+rules:
+  - id: PPE_NO_HELMET_SUSTAINED
+    trigger: no-helmet
+    window_seconds: 8.0
+    min_occurrences: 12      # ~12/16 frames at 15 FPS
+    severity: HIGH
+    cooldown_seconds: 120
+    context_boosts:
+      - condition: 'zone_risk == "machinery"'
+        severity_upgrade: CRITICAL
+
+  - id: PPE_NO_VEST_SUSTAINED
+    trigger: no-vest
+    window_seconds: 10.0
+    min_occurrences: 15
+    severity: MEDIUM
+    cooldown_seconds: 180
+
+  - id: DROWSY_OPERATOR
+    trigger: ear_low
+    window_seconds: 3.0
+    min_occurrences: 30      # ~30 frames in 3s at 15 FPS (every-frame inference assumed)
+    severity: CRITICAL
+    cooldown_seconds: 300
+
+  - id: PHONE_IN_MACHINERY
+    trigger: phone
+    zone: machinery
+    window_seconds: 5.0
+    min_occurrences: 6
+    severity: HIGH
+    cooldown_seconds: 60
+
+  - id: RESTRICTED_ZONE_BREACH
+    trigger: zone_breach
+    window_seconds: 2.0
+    min_occurrences: 4
+    severity: HIGH
+    cooldown_seconds: 30

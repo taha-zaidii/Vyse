@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vyse — Product Requirements Document</title>
+<style>
+  :root {
+    --brand: #0f4c75;
+    --brand-light: #1b6ca8;
+    --accent: #e8aa14;
+    --accent-muted: #f5d66e;
+    --danger: #c0392b;
+    --success: #1a7a4a;
+    --bg: #f8f7f3;
+    --surface: #ffffff;
+    --surface2: #f2f1ec;
+    --border: #e0ddd5;
+    --text: #1a1917;
+    --text-muted: #5a5854;
+    --text-faint: #8a8782;
+    --code-bg: #1e1e1e;
+    --code-text: #d4d4d4;
+    --tag-bg: #e8f0f7;
+    --tag-text: #0f4c75;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --brand: #5ba3d9;
+      --brand-light: #7eb8e8;
+      --accent: #f5c842;
+      --bg: #111110;
+      --surface: #1a1a18;
+      --surface2: #222220;
+      --border: #2e2e2a;
+      --text: #f0ede8;
+      --text-muted: #a09d98;
+      --text-faint: #6a6762;
+      --tag-bg: #1a2a38;
+      --tag-text: #7eb8e8;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.75;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 2rem 6rem;
+  }
+
+  /* Cover */
+  .cover {
+    border-bottom: 3px solid var(--brand);
+    padding-bottom: 2.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .cover-tag {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cover-tag::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .cover h1 {
+    font-family: 'Georgia', serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .cover h1 span { color: var(--brand); }
+
+  .cover-sub {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .meta-card {
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--brand);
+  }
+
+  .meta-card .label {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+
+  .meta-card .value {
+    font-family: 'Georgia', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 3rem;
+  }
+
+  .toc-title {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 1rem;
+  }
+
+  .toc ol {
+    padding-left: 1.2rem;
+    column-count: 2;
+    column-gap: 2rem;
+    font-size: 13.5px;
+  }
+
+  .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+  .toc a { color: var(--brand); text-decoration: none; font-family: 'Georgia', serif; }
+  .toc a:hover { text-decoration: underline; }
+  .toc .sub { list-style: none; padding-left: 0.8rem; margin-top: 0.25rem; }
+  .toc .sub li { margin-bottom: 0.2rem; font-size: 12.5px; color: var(--text-muted); }
+  .toc .sub a { color: var(--text-muted); }
+
+  /* Sections */
+  section {
+    margin-bottom: 3.5rem;
+    scroll-margin-top: 2rem;
+  }
+
+  h2 {
+    font-family: 'Georgia', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2 .section-num {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+    padding: 2px 7px;
+    background: var(--surface2);
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  h3 {
+    font-family: 'Georgia', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 1.75rem 0 0.75rem;
+  }
+
+  h4 {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin: 1.25rem 0 0.5rem;
+    font-weight: 700;
+  }
+
+  p { margin-bottom: 0.9rem; color: var(--text); }
+
+  /* Callout boxes */
+  .callout {
+    border-left: 4px solid var(--brand);
+    background: var(--surface);
+    border-radius: 0 6px 6px 0;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    font-size: 14px;
+  }
+
+  .callout.accent { border-left-color: var(--accent); }
+  .callout.danger { border-left-color: var(--danger); }
+  .callout.success { border-left-color: var(--success); }
+
+  .callout-label {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 0.4rem;
+  }
+
+  /* Stat row */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Georgia', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--brand);
+    line-height: 1.1;
+  }
+
+  .stat-label {
+    font-size: 11.5px;
+    color: var(--text-faint);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* Feature cards */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.1rem 1.25rem;
+  }
+
+  .feature-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--brand);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* Agent architecture */
+  .agent-block {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+
+  .agent-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.85rem 1.25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .agent-badge {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+
+  .badge-vision { background: #e0f0ff; color: #0a4a8a; }
+  .badge-risk   { background: #fff3e0; color: #8a4a00; }
+  .badge-alert  { background: #fce8e8; color: #8a0a0a; }
+  .badge-analytics { background: #e0f7f0; color: #0a5a3a; }
+
+  @media (prefers-color-scheme: dark) {
+    .badge-vision { background: #0a2a44; color: #7eb8e8; }
+    .badge-risk   { background: #3a2000; color: #f5c842; }
+    .badge-alert  { background: #3a0a0a; color: #f09595; }
+    .badge-analytics { background: #0a2a1e; color: #5dcaa5; }
+  }
+
+  .agent-name {
+    font-family: 'Georgia', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .agent-body {
+    padding: 1rem 1.25rem;
+    background: var(--surface2);
+  }
+
+  /* Tech stack table */
+  .tech-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 1rem 0;
+  }
+
+  .tech-table th {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--surface);
+    border-bottom: 1.5px solid var(--border);
+    color: var(--text-faint);
+    font-weight: 700;
+  }
+
+  .tech-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+  }
+
+  .tech-table tr:last-child td { border-bottom: none; }
+  .tech-table tr:nth-child(even) td { background: var(--surface2); }
+
+  .tech-table .layer {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+
+  .tech-table .tool {
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--brand);
+  }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 1.1rem 1.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    overflow-x: auto;
+    margin: 1rem 0;
+    border: 1px solid #333;
+  }
+
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px;
+    background: var(--surface2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--brand);
+    border: 1px solid var(--border);
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    border: none;
+    color: var(--code-text);
+  }
+
+  /* Lists */
+  ul, ol {
+    padding-left: 1.5rem;
+    margin-bottom: 0.9rem;
+  }
+
+  li { margin-bottom: 0.35rem; font-size: 14.5px; }
+
+  ul li::marker { color: var(--accent); }
+
+  /* Roadmap */
+  .phase {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 1rem 0;
+    overflow: hidden;
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase-name {
+    font-family: 'Georgia', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .phase-timeline {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    padding: 3px 8px;
+    background: var(--surface2);
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .phase-body {
+    padding: 1rem 1.25rem;
+    background: var(--surface2);
+    font-size: 14px;
+  }
+
+  .phase-body ul { margin-bottom: 0; }
+
+  /* Competitor matrix */
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    margin: 1rem 0;
+  }
+
+  .comp-table th {
+    background: var(--brand);
+    color: white;
+    padding: 8px 12px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .comp-table th:first-child { text-align: left; }
+
+  .comp-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .comp-table td:first-child {
+    text-align: left;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  .comp-table tr:nth-child(even) td { background: var(--surface2); }
+  .comp-table .vyse-row td { background: #fff9e6 !important; }
+  @media (prefers-color-scheme: dark) {
+    .comp-table .vyse-row td { background: #2a2300 !important; }
+  }
+  .comp-table .vyse-row td:first-child { color: var(--accent); }
+
+  .check { color: var(--success); font-weight: 700; }
+  .cross { color: var(--danger); }
+  .partial { color: var(--accent); }
+
+  /* Risk table */
+  .risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 1rem 0;
+  }
+
+  .risk-table th {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 8px 10px;
+    background: var(--surface);
+    border-bottom: 1.5px solid var(--border);
+    color: var(--text-faint);
+  }
+
+  .risk-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 13px;
+  }
+
+  .risk-table tr:last-child td { border-bottom: none; }
+
+  .sev-high { color: var(--danger); font-weight: 700; font-size: 11px; font-family: 'Courier New', monospace; }
+  .sev-med  { color: #c47a00; font-weight: 700; font-size: 11px; font-family: 'Courier New', monospace; }
+  .sev-low  { color: var(--success); font-weight: 700; font-size: 11px; font-family: 'Courier New', monospace; }
+
+  /* Data model */
+  .schema {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    margin: 1rem 0;
+    border: 1px solid #333;
+    overflow-x: auto;
+  }
+
+  .schema .type { color: #569cd6; }
+  .schema .key  { color: #9cdcfe; }
+  .schema .val  { color: #ce9178; }
+  .schema .comment { color: #6a9955; }
+
+  /* Persona cards */
+  .persona {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.1rem 1.25rem;
+    margin: 0.75rem 0;
+    align-items: start;
+  }
+
+  .persona-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .persona-name { font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 2px; }
+  .persona-role { font-size: 11.5px; color: var(--text-faint); font-family: 'Courier New', monospace; letter-spacing: 0.05em; }
+  .persona-needs { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+
+  /* API endpoint */
+  .endpoint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 7px 12px;
+    margin: 6px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px;
+  }
+
+  .method {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    min-width: 44px;
+    text-align: center;
+  }
+
+  .method-get  { background: #e0f7f0; color: #0a5a3a; }
+  .method-post { background: #fff3e0; color: #8a4a00; }
+  .method-ws   { background: #e0f0ff; color: #0a4a8a; }
+  .method-del  { background: #fce8e8; color: #8a0a0a; }
+
+  @media (prefers-color-scheme: dark) {
+    .method-get  { background: #0a2a1e; color: #5dcaa5; }
+    .method-post { background: #3a2000; color: #f5c842; }
+    .method-ws   { background: #0a2a44; color: #7eb8e8; }
+    .method-del  { background: #3a0a0a; color: #f09595; }
+  }
+
+  .endpoint-path { color: var(--text); }
+  .endpoint-desc { color: var(--text-faint); font-size: 11.5px; margin-left: auto; }
+
+  /* KPI table */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .kpi-metric {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+
+  .kpi-target {
+    font-family: 'Georgia', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--brand);
+    margin-bottom: 4px;
+  }
+
+  .kpi-desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  /* Startup path */
+  .horizon {
+    display: flex;
+    gap: 0;
+    margin: 1rem 0;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .horizon-step {
+    flex: 1;
+    padding: 1rem 1.1rem;
+    background: var(--surface2);
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+
+  .horizon-step:last-child { border-right: none; }
+
+  .horizon-num {
+    font-family: 'Courier New', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .horizon-title {
+    font-family: 'Georgia', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .horizon-desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Separator */
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 3rem 0;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    margin: 2px;
+    font-weight: 700;
+  }
+
+  /* Print / export */
+  @media print {
+    body { max-width: 100%; padding: 1rem; background: white; color: black; }
+    pre { break-inside: avoid; }
+    .phase, .agent-block { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cover -->
+<div class="cover">
+  <div class="cover-tag">Product Requirements Document · Confidential</div>
+  <h1><span>Vyse</span></h1>
+  <div class="cover-sub">Real-Time AI Workplace Safety Intelligence System</div>
+  <p style="font-size:14px; color:var(--text-muted); max-width:600px;">
+    A modular, multi-agent computer vision platform that detects PPE violations, drowsiness, device misuse,
+    and anomalous activity on live camera feeds — converting raw detections into actionable safety intelligence.
+  </p>
+  <div class="cover-meta">
+    <div class="meta-card">
+      <div class="label">Version</div>
+      <div class="value">1.0.0 — PRD</div>
+    </div>
+    <div class="meta-card">
+      <div class="label">Status</div>
+      <div class="value">Active · Pre-Build</div>
+    </div>
+    <div class="meta-card">
+      <div class="label">Author</div>
+      <div class="value">Taha Zaidi</div>
+    </div>
+    <div class="meta-card">
+      <div class="label">Target</div>
+      <div class="value">GitHub: taha-zaidii/Vyse</div>
+    </div>
+    <div class="meta-card">
+      <div class="label">Core Stack</div>
+      <div class="value">Python · YOLOv8 · MediaPipe</div>
+    </div>
+    <div class="meta-card">
+      <div class="label">Architecture</div>
+      <div class="value">4-Agent · Async Pipeline</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ol>
+    <li><a href="#executive-summary">Executive Summary</a></li>
+    <li><a href="#vision-mission">Vision &amp; Mission</a></li>
+    <li><a href="#market">Market Opportunity</a></li>
+    <li><a href="#problem">Problem Statement</a></li>
+    <li><a href="#solution">Solution Overview</a></li>
+    <li><a href="#personas">Target Users &amp; Personas</a></li>
+    <li><a href="#competitive">Competitive Landscape</a></li>
+    <li><a href="#scope">Product Scope</a></li>
+    <li><a href="#features">Feature Requirements</a>
+      <ul class="sub">
+        <li><a href="#vision-agent">Vision Agent</a></li>
+        <li><a href="#risk-agent">Risk Agent</a></li>
+        <li><a href="#alert-agent">Alert Agent</a></li>
+        <li><a href="#analytics-agent">Analytics Agent</a></li>
+        <li><a href="#dashboard">Dashboard &amp; UI</a></li>
+      </ul>
+    </li>
+    <li><a href="#architecture">Technical Architecture</a></li>
+    <li><a href="#tech-stack">Tech Stack</a></li>
+    <li><a href="#data-models">Data Models</a></li>
+    <li><a href="#api">API Design</a></li>
+    <li><a href="#nfr">Non-Functional Requirements</a></li>
+    <li><a href="#roadmap">Development Roadmap</a></li>
+    <li><a href="#kpis">Metrics &amp; KPIs</a></li>
+    <li><a href="#startup">Startup Scale Path</a></li>
+    <li><a href="#risks">Risks &amp; Mitigations</a></li>
+    <li><a href="#hardware">Hardware Tiers &amp; Deployment</a></li>
+    <li><a href="#mlops">MLOps &amp; Dataset Strategy</a></li>
+    <li><a href="#design-system">Design System &amp; Brand Identity</a></li>
+    <li><a href="#integrations">Integrations Catalog</a></li>
+    <li><a href="#compliance">Compliance Mapping</a></li>
+    <li><a href="#acceptance">Acceptance Criteria · Definition of Done</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+  </ol>
+</div>
+
+<!-- 1. Executive Summary -->
+<section id="executive-summary">
+  <h2><span class="section-num">01</span> Executive Summary</h2>
+  <p>
+    Vyse is a real-time AI workplace safety platform that watches live camera feeds the way a seasoned safety officer would — except it never blinks, never fatigues, and processes every pixel simultaneously. It combines YOLOv8 object detection for PPE compliance and hazard recognition with MediaPipe facial landmark analysis for drowsiness detection, all orchestrated through a 4-agent autonomous system that converts raw frame-by-frame detections into structured, high-level safety incidents.
+  </p>
+  <p>
+    The project is directly inspired by Motive's AI Vision platform — which pioneered computer vision for fleet safety and has seen exponential demand — and targets the broader industrial/workplace safety vertical where the same pattern (multi-camera + real-time CV + agentic decision-making) is worth billions. The global workplace safety technology market stands at $21.25 billion in 2025, heading toward $37.9 billion by 2030 at a 12.27% CAGR, with the AI video analytics segment alone growing at 22.7% CAGR.
+  </p>
+  <div class="callout accent">
+    <div class="callout-label">Strategic Positioning</div>
+    Vyse is built as an open, edge-deployable, privacy-first alternative to SaaS-only platforms like Protex AI ($36M Series B) and Voxel AI — differentiated by its transparent multi-agent architecture, developer-extensible rules engine, and ability to run fully on-premises on commodity hardware without cloud dependency.
+  </div>
+</section>
+
+<!-- 2. Vision & Mission -->
+<section id="vision-mission">
+  <h2><span class="section-num">02</span> Vision &amp; Mission</h2>
+  <div class="callout">
+    <div class="callout-label">Vision</div>
+    A world where every camera is a safety officer — where no PPE violation goes unnoticed, no drowsy worker goes unchecked, and every workplace incident is prevented before it becomes a statistic.
+  </div>
+  <div class="callout success">
+    <div class="callout-label">Mission</div>
+    To make enterprise-grade AI safety intelligence accessible to any facility with existing cameras, through an open, modular, and privacy-respecting platform that actually understands context — not just pixels.
+  </div>
+  <h3>Design Philosophy</h3>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>Context-Aware</h4>
+      <p>A single missing helmet is a warning. A missing helmet near a forklift at shift-start is a critical incident. Vyse understands temporal and spatial context.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Edge-First</h4>
+      <p>Sensitive video footage stays on-premises. Inference runs locally. Only structured metadata — not raw video — leaves the facility.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Modular by Design</h4>
+      <p>Each detection type, agent, and alerting channel is a swappable module. Add a new detection model without touching the rest of the system.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Explainable</h4>
+      <p>Every alert includes the rule that triggered it, the confidence score, and the temporal window. Safety managers see reasoning, not black boxes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Market Opportunity -->
+<section id="market">
+  <h2><span class="section-num">03</span> Market Opportunity</h2>
+  <div class="stat-row">
+    <div class="stat">
+      <div class="stat-num">$21.25B</div>
+      <div class="stat-label">Global workplace safety market in 2025</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">$37.9B</div>
+      <div class="stat-label">Projected market by 2030 at 12.27% CAGR</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">22.7%</div>
+      <div class="stat-label">CAGR of AI video analytics ($5B→$17B by 2031)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3M</div>
+      <div class="stat-label">Work-related deaths annually (ILO)</div>
+    </div>
+  </div>
+
+  <h3>Key Market Tailwinds</h3>
+  <ul>
+    <li><strong>Regulatory intensification:</strong> OSHA tightening compliance requirements globally; GDPR-adjacent data laws pushing edge-inference adoption.</li>
+    <li><strong>AI adoption acceleration:</strong> 53% of firms planned to increase AI budgets by 10%+ in 2025, with safety as a top ROI driver (Verdantix Global Survey 2024).</li>
+    <li><strong>Human vigilance ceiling:</strong> Control room operators miss 45%+ of critical events after 30 minutes of monitoring 40+ feeds — a biological constraint AI solves permanently.</li>
+    <li><strong>Computer vision maturity:</strong> YOLOv8 achieves 91.7% average precision in PPE detection (IEEE, 2024); the technology is ready for production.</li>
+    <li><strong>Agentic AI mainstreaming:</strong> Gartner forecasts 40% of enterprise apps will embed agentic AI by end of 2026, up from under 5% in 2025.</li>
+    <li><strong>Motive's validation:</strong> Motive's AI Vision demonstrates massive ROI and demand in the fleet sector — the same pattern translates directly to stationary workplace safety.</li>
+  </ul>
+
+  <h3>Why Now</h3>
+  <p>
+    YOLOv8 (released 2023) made real-time object detection cheap and fast enough to run on a single GPU or even a well-provisioned CPU. MediaPipe's face mesh landmark model (468 landmarks at 30+ FPS) made drowsiness detection accessible without custom datasets. The combination of these open-source primitives with Python's asyncio ecosystem makes a production-grade, multi-agent video pipeline achievable for a solo developer in weeks — something that would have required a team and 12 months just 3 years ago.
+  </p>
+</section>
+
+<!-- 4. Problem Statement -->
+<section id="problem">
+  <h2><span class="section-num">04</span> Problem Statement</h2>
+  <h3>Primary Problems</h3>
+  <ul>
+    <li><strong>Manual PPE auditing doesn't scale.</strong> A single safety officer cannot monitor all zones across an 8-hour shift. Spot checks create compliance theater, not compliance.</li>
+    <li><strong>Drowsiness is invisible until it's too late.</strong> Fatigue-related accidents cost lives, but there's no non-invasive, always-on detection method in most workplaces.</li>
+    <li><strong>Incident reports are retrospective.</strong> Today's systems log incidents after they happen. The goal is prevention — catching the precursor before the injury.</li>
+    <li><strong>Existing AI solutions are expensive and locked-in.</strong> Enterprise platforms like Intenseye, Protex AI, and Voxel AI require cloud subscriptions, proprietary hardware, and vendor lock-in starting at $50K+/year.</li>
+    <li><strong>False positives erode trust.</strong> Naive frame-by-frame detection (someone removes their helmet for 2 seconds to scratch their head) floods safety managers with noise, causing alert fatigue.</li>
+  </ul>
+
+  <div class="callout danger">
+    <div class="callout-label">Critical Insight</div>
+    The gap is not in detection capability — YOLOv8 can detect a helmet reliably. The gap is in <em>decision intelligence</em>: converting thousands of detections per minute into a handful of actionable, prioritized, context-aware incidents. This is Vyse's core value proposition.
+  </div>
+</section>
+
+<!-- 5. Solution Overview -->
+<section id="solution">
+  <h2><span class="section-num">05</span> Solution Overview</h2>
+  <p>
+    Vyse is a Python-based, real-time safety intelligence system. It ingests live video from one or more cameras, runs concurrent detection models, and passes structured detection events through a chain of four specialized AI agents. Each agent has a single responsibility: detect, reason, alert, or analyze.
+  </p>
+
+  <h3>What Vyse Detects</h3>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>PPE Compliance</h4>
+      <p>Hard hats, safety vests, gloves, goggles, face shields — per-worker, per-zone compliance tracking in real time.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Drowsiness / Fatigue</h4>
+      <p>Eye Aspect Ratio (EAR) via MediaPipe 468-landmark face mesh. Continuous blink-rate and eye-closure duration monitoring.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Unauthorized Device Usage</h4>
+      <p>Mobile phone detection in restricted or safety-critical zones (machinery operation areas, controlled rooms).</p>
+    </div>
+    <div class="feature-card">
+      <h4>Restricted Zone Breach</h4>
+      <p>Polygon-defined exclusion zones. Alerts when persons enter hazardous areas without clearance.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Anomalous Posture / Fall</h4>
+      <p>Unusual body posture detection using skeletal keypoint analysis — potential fall or incapacitation indicators.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Near-Miss Events</h4>
+      <p>Proximity analysis between workers and moving equipment or vehicles within defined safety margins.</p>
+    </div>
+  </div>
+
+  <h3>How It Works — The 4-Agent Pipeline</h3>
+  <p>
+    Raw video frames flow through an asynchronous producer-consumer pipeline. The Vision Agent ingests frames, runs YOLOv8 and MediaPipe in parallel, and emits structured detection events onto an internal message bus. The Risk Agent applies temporal rules to those events, converting transient detections into durable incidents with severity scores. The Alert Agent consumes high-severity incidents and dispatches notifications through configured channels. The Analytics Agent continuously writes to a time-series store for trend analysis and compliance reporting.
+  </p>
+</section>
+
+<!-- 6. Personas -->
+<section id="personas">
+  <h2><span class="section-num">06</span> Target Users &amp; Personas</h2>
+
+  <div class="persona">
+    <div class="persona-avatar">SM</div>
+    <div>
+      <div class="persona-name">Sara Mehdi — EHS / Safety Manager</div>
+      <div class="persona-role">Primary User · Manufacturing / Construction</div>
+      <div class="persona-needs">Needs real-time visibility into all zones without being physically present. Wants audit-ready incident logs for OSHA compliance. Frustrated by false alarms from existing cameras. Values: accuracy, escalation control, daily reports.</div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="persona-avatar">OM</div>
+    <div>
+      <div class="persona-name">Omar Khan — Operations Manager</div>
+      <div class="persona-role">Secondary User · Logistics / Warehousing</div>
+      <div class="persona-needs">Wants to correlate safety incidents with productivity metrics. Cares about shift-level trends. Needs API access to integrate Vyse data into existing dashboards. Values: data export, historical analytics, ROI visibility.</div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="persona-avatar">CTO</div>
+    <div>
+      <div class="persona-name">DevOps / IT Lead</div>
+      <div class="persona-role">Technical Buyer · Enterprise IT</div>
+      <div class="persona-needs">Needs on-premises deployment with no cloud egress for sensitive video. Wants Docker-based deployment, REST APIs, and structured logs. Values: data sovereignty, deployment simplicity, extensibility.</div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="persona-avatar" style="background:#8a0a0a;">CF</div>
+    <div>
+      <div class="persona-name">CFO / Insurance Underwriter</div>
+      <div class="persona-role">Economic Buyer · Executive / Insurance</div>
+      <div class="persona-needs">Wants measurable incident reduction for insurance premium negotiation. Needs compliance documentation and incident trend reports. Values: ROI quantification, risk reduction, audit trails.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Competitive Landscape -->
+<section id="competitive">
+  <h2><span class="section-num">07</span> Competitive Landscape</h2>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>PPE Detection</th>
+        <th>Drowsiness</th>
+        <th>Edge/On-Prem</th>
+        <th>Open Source</th>
+        <th>Multi-Agent</th>
+        <th>Pricing</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Protex AI</td>
+        <td class="check">✓</td>
+        <td class="cross">✗</td>
+        <td class="partial">Partial</td>
+        <td class="cross">✗</td>
+        <td class="cross">✗</td>
+        <td>Enterprise SaaS</td>
+      </tr>
+      <tr>
+        <td>Voxel AI</td>
+        <td class="check">✓</td>
+        <td class="cross">✗</td>
+        <td class="cross">✗</td>
+        <td class="cross">✗</td>
+        <td class="cross">✗</td>
+        <td>Enterprise SaaS</td>
+      </tr>
+      <tr>
+        <td>viAct</td>
+        <td class="check">✓</td>
+        <td class="cross">✗</td>
+        <td class="partial">Partial</td>
+        <td class="cross">✗</td>
+        <td class="cross">✗</td>
+        <td>$9.3M Series A</td>
+      </tr>
+      <tr>
+        <td>Intenseye</td>
+        <td class="check">✓</td>
+        <td class="partial">Limited</td>
+        <td class="cross">✗</td>
+        <td class="cross">✗</td>
+        <td class="cross">✗</td>
+        <td>Enterprise SaaS</td>
+      </tr>
+      <tr>
+        <td>Motive AI Vision</td>
+        <td class="partial">Fleet-only</td>
+        <td class="check">✓</td>
+        <td class="cross">✗</td>
+        <td class="cross">✗</td>
+        <td class="cross">✗</td>
+        <td>Fleet subscription</td>
+      </tr>
+      <tr class="vyse-row">
+        <td>⬡ Vyse</td>
+        <td class="check">✓</td>
+        <td class="check">✓</td>
+        <td class="check">✓ Full</td>
+        <td class="check">✓</td>
+        <td class="check">✓</td>
+        <td>Open Core</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Differentiation Summary</h3>
+  <ul>
+    <li><strong>Drowsiness + PPE in one pipeline:</strong> No competitor combines eye-fatigue analysis with PPE compliance at the edge in a unified platform.</li>
+    <li><strong>Multi-agent architecture:</strong> Explicit separation of detection, reasoning, alerting, and analytics — each independently testable, replaceable, and observable.</li>
+    <li><strong>Temporal intelligence:</strong> Rule engine operates over sliding time windows, not single frames — eliminating the false positive problem that plagues naive CV systems.</li>
+    <li><strong>Open and extensible:</strong> The core is open-source; companies can add custom detection models and alert channels without vendor negotiation.</li>
+    <li><strong>Resume/portfolio signal:</strong> Demonstrates production-grade systems thinking (async pipelines, agent coordination, observability) aligned with what Motive, Waymo, and similar companies hire for.</li>
+  </ul>
+</section>
+
+<!-- 8. Scope -->
+<section id="scope">
+  <h2><span class="section-num">08</span> Product Scope</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin:1rem 0;">
+    <div>
+      <h4 style="color:var(--success);">In Scope — v1.0</h4>
+      <ul>
+        <li>YOLOv8-based PPE detection (helmet, vest, gloves, goggles)</li>
+        <li>MediaPipe EAR drowsiness detection</li>
+        <li>Mobile phone / device detection</li>
+        <li>Polygon-based restricted zone breach</li>
+        <li>4-agent orchestration system</li>
+        <li>Async video inference pipeline</li>
+        <li>Temporal rule engine (sliding windows)</li>
+        <li>Multi-channel alert dispatch (console, webhook, email)</li>
+        <li>Structured JSON incident logging</li>
+        <li>REST API for incident data</li>
+        <li>Basic Next.js dashboard (live feed + incident list)</li>
+        <li>Docker Compose deployment</li>
+        <li>Single-camera support (multi-camera in v1.1)</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color:var(--danger);">Out of Scope — v1.0</h4>
+      <ul>
+        <li>Multi-camera simultaneous inference (v1.1)</li>
+        <li>LLM-powered incident narration (v2)</li>
+        <li>Worker identity / biometric linking (v2)</li>
+        <li>Predictive risk modeling (v2)</li>
+        <li>Integration with OSHA / ERP systems (v2)</li>
+        <li>Native mobile app (v3)</li>
+        <li>Audio-based detection (shouting, alarms) (v3)</li>
+        <li>Thermal / IR camera support (v3)</li>
+        <li>Multi-tenant SaaS platform (v3)</li>
+        <li>Hardware-specific optimization (NVIDIA Jetson) (v3)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Feature Requirements -->
+<section id="features">
+  <h2><span class="section-num">09</span> Feature Requirements</h2>
+  <p>Feature requirements are organized by agent. Each agent owns a specific responsibility layer in the system. All agents communicate asynchronously via an internal event bus.</p>
+
+  <!-- Vision Agent -->
+  <h3 id="vision-agent">9.1 Vision Agent</h3>
+  <div class="agent-block">
+    <div class="agent-header">
+      <span class="agent-badge badge-vision">Vision</span>
+      <span class="agent-name">Frame Ingestion &amp; Multi-Model Detection</span>
+    </div>
+    <div class="agent-body">
+      <h4>Core Responsibilities</h4>
+      <ul>
+        <li>Capture frames from RTSP stream / webcam / video file at configurable FPS (default: 15 FPS inference)</li>
+        <li>Run YOLOv8n (nano) for real-time object detection — persons, helmets, vests, gloves, goggles, mobile phones</li>
+        <li>Run MediaPipe Face Mesh on all detected person ROIs to compute Eye Aspect Ratio (EAR)</li>
+        <li>Run skeletal pose estimation (MediaPipe Pose) for fall / anomalous posture detection</li>
+        <li>Perform zone overlap analysis using pre-configured polygon coordinates</li>
+        <li>Emit structured <code>DetectionEvent</code> objects onto the internal async queue</li>
+      </ul>
+      <h4>Detection Specifications</h4>
+      <ul>
+        <li><strong>PPE Classes:</strong> <code>person</code>, <code>helmet</code>, <code>no-helmet</code>, <code>vest</code>, <code>no-vest</code>, <code>gloves</code>, <code>goggles</code>, <code>phone</code></li>
+        <li><strong>EAR Drowsiness Threshold:</strong> EAR &lt; 0.25 for &gt; 2 consecutive seconds = drowsiness flag</li>
+        <li><strong>Confidence Threshold:</strong> Minimum 0.45 for detection events to be emitted (configurable)</li>
+        <li><strong>Zone Breach:</strong> Centroid of detected person bounding box inside polygon = breach event</li>
+        <li><strong>Frame Skip:</strong> Process every N-th frame for non-GPU environments (configurable, default N=2)</li>
+      </ul>
+      <h4>Non-Functional</h4>
+      <ul>
+        <li>Target: &lt; 80ms inference latency per frame on GPU (RTX 3060+), &lt; 250ms on CPU</li>
+        <li>Pipeline must not block on slow consumers — use asyncio Queue with backpressure</li>
+        <li>Annotated preview frames written to shared memory buffer for dashboard streaming</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Risk Agent -->
+  <h3 id="risk-agent">9.2 Risk Agent</h3>
+  <div class="agent-block">
+    <div class="agent-header">
+      <span class="agent-badge badge-risk">Risk</span>
+      <span class="agent-name">Temporal Rule Engine &amp; Incident Scoring</span>
+    </div>
+    <div class="agent-body">
+      <h4>Core Responsibilities</h4>
+      <ul>
+        <li>Consume <code>DetectionEvent</code> stream from Vision Agent</li>
+        <li>Maintain sliding time-window state per detection type per zone (default: 10-second windows)</li>
+        <li>Apply configurable temporal rules to convert detection sequences into <code>Incident</code> objects</li>
+        <li>Assign severity scores (LOW / MEDIUM / HIGH / CRITICAL) based on rule weight and context</li>
+        <li>Suppress duplicate incidents within a cooldown period (default: 60 seconds per worker per type)</li>
+        <li>Emit <code>IncidentEvent</code> objects onto the alert queue</li>
+      </ul>
+      <h4>Rule Engine Specifications</h4>
+      <p>Rules are defined in a YAML config file and evaluated as a condition-action pipeline:</p>
+      <pre><code>rules:
+  - id: PPE_NO_HELMET_SUSTAINED
+    trigger: no-helmet
+    window_seconds: 8
+    min_occurrences: 12        # 12/16 frames in 8s
+    severity: HIGH
+    cooldown_seconds: 120
+    context_boosts:
+      - condition: zone == "machinery"
+        severity_upgrade: CRITICAL
+
+  - id: DROWSY_DRIVER
+    trigger: ear_low
+    window_seconds: 3
+    min_occurrences: 45        # ~15 FPS × 3s
+    severity: CRITICAL
+    cooldown_seconds: 300
+
+  - id: PHONE_USAGE_MACHINERY
+    trigger: phone_detected
+    zone: machinery
+    window_seconds: 5
+    min_occurrences: 8
+    severity: HIGH
+    cooldown_seconds: 60</code></pre>
+      <h4>Severity Matrix</h4>
+      <table class="tech-table">
+        <thead><tr><th>Level</th><th>Score</th><th>Description</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td class="sev-low">LOW</td><td>1</td><td>Informational, no immediate risk</td><td>Helmet removed briefly in safe zone</td></tr>
+          <tr><td class="sev-med">MEDIUM</td><td>2</td><td>Policy violation, monitor</td><td>Phone usage in general work area</td></tr>
+          <tr><td class="sev-high">HIGH</td><td>3</td><td>Safety risk, alert supervisor</td><td>No helmet in active construction zone</td></tr>
+          <tr><td class="sev-high" style="color:#a32d2d;">CRITICAL</td><td>4</td><td>Imminent danger, immediate action</td><td>Drowsiness near heavy machinery</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Alert Agent -->
+  <h3 id="alert-agent">9.3 Alert Agent</h3>
+  <div class="agent-block">
+    <div class="agent-header">
+      <span class="agent-badge badge-alert">Alert</span>
+      <span class="agent-name">Multi-Channel Notification &amp; Escalation</span>
+    </div>
+    <div class="agent-body">
+      <h4>Core Responsibilities</h4>
+      <ul>
+        <li>Consume <code>IncidentEvent</code> objects from Risk Agent queue</li>
+        <li>Route incidents to appropriate channels based on severity and zone configuration</li>
+        <li>Manage alert deduplication, rate limiting, and escalation chains</li>
+        <li>Persist all alert dispatches to the incident log with delivery status</li>
+      </ul>
+      <h4>Alert Channels (v1)</h4>
+      <ul>
+        <li><strong>Console Logger:</strong> Colored, structured terminal output for all incidents (all severities)</li>
+        <li><strong>Webhook:</strong> HTTP POST with JSON payload to configurable endpoints (Slack, Teams, custom)</li>
+        <li><strong>Email (SMTP):</strong> HTML email with incident details and annotated frame snapshot for HIGH/CRITICAL</li>
+        <li><strong>WebSocket Push:</strong> Real-time incident stream to connected dashboard clients</li>
+      </ul>
+      <h4>Escalation Logic</h4>
+      <ul>
+        <li>CRITICAL incidents unacknowledged for 60 seconds → escalate to secondary contact</li>
+        <li>3 HIGH incidents in same zone within 10 minutes → auto-elevate zone to CRITICAL monitoring mode</li>
+        <li>Alert deduplication: same incident type + same zone = suppress for cooldown window</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Analytics Agent -->
+  <h3 id="analytics-agent">9.4 Analytics Agent</h3>
+  <div class="agent-block">
+    <div class="agent-header">
+      <span class="agent-badge badge-analytics">Analytics</span>
+      <span class="agent-name">Incident Intelligence &amp; Compliance Reporting</span>
+    </div>
+    <div class="agent-body">
+      <h4>Core Responsibilities</h4>
+      <ul>
+        <li>Subscribe to all incident events and write to time-series datastore (SQLite → PostgreSQL)</li>
+        <li>Compute rolling aggregations: incidents per hour, per zone, per shift, per type</li>
+        <li>Generate daily/weekly compliance summary reports (JSON + HTML)</li>
+        <li>Expose analytics query API for dashboard and external integrations</li>
+        <li>Maintain detection confidence histograms and model performance metrics</li>
+      </ul>
+      <h4>Analytics Dimensions</h4>
+      <ul>
+        <li><strong>Time:</strong> Hourly, daily, weekly, monthly aggregations</li>
+        <li><strong>Zone:</strong> Incident breakdown per configured zone</li>
+        <li><strong>Type:</strong> PPE, drowsiness, device, breach, anomaly</li>
+        <li><strong>Severity:</strong> Distribution across LOW/MEDIUM/HIGH/CRITICAL</li>
+        <li><strong>Shift:</strong> Configurable shift windows (e.g. 6am–2pm, 2pm–10pm)</li>
+        <li><strong>Model Health:</strong> Avg confidence, frame processing rate, queue depth</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <h3 id="dashboard">9.5 Dashboard &amp; UI</h3>
+  <p>A Next.js 14 (App Router, TypeScript strict) dashboard provides real-time visibility without requiring safety managers to touch the terminal. UI is built on <strong>shadcn/ui + Tailwind CSS</strong> for composable primitives, <strong>Framer Motion</strong> for transitions and incident-card choreography, and <strong>Recharts</strong> for analytics. Visual language is dark-first, dense-but-calm, with WCAG AA contrast and full keyboard nav. See §21 — Design System for the full spec.</p>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>Overview / Command Center</h4>
+      <p>Single-screen situational awareness: live feed grid, active CRITICAL banner, today's KPIs (incidents/zone/severity), zone heatmap. The "everything I need before my morning coffee" page.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Live Feed View</h4>
+      <p>Annotated camera stream via WebSocket MJPEG. Bounding boxes (with persistent ByteTrack IDs), zone polygon overlays, per-person EAR readout, confidence scores. Pause / scrub / snapshot controls.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Incident Timeline</h4>
+      <p>Chronological feed with severity badges, type icons, zone, timestamp, annotated snapshot. Filter by type/severity/zone/camera/acknowledged-state. Bulk acknowledge with single-key shortcuts (j/k navigation, x to ack).</p>
+    </div>
+    <div class="feature-card">
+      <h4>Incident Detail Drawer</h4>
+      <p>Slide-over panel: annotated frame at moment-of-trigger, the rule that fired (with current YAML), confidence-over-time sparkline, ByteTrack ID continuity, acknowledge / escalate / dismiss buttons. Explainability built in.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Analytics Dashboard</h4>
+      <p>Hourly incident heatmap (zone × hour), severity distribution donut, 7-day trend lines, model-health row (avg confidence, FPS, queue depth, missed-frame %). Recharts on a dark theme.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Rules &amp; Zones Editor</h4>
+      <p>Visual YAML editor for temporal rules with live validation; rule toggle switches. Zone editor draws polygons directly on a paused frame from each camera — Shapely-validated on save.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Settings</h4>
+      <p>Camera registry (add / test / disable RTSP URLs), channel config (Slack/Teams/email webhooks with test-send), threshold sliders, retention policy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10. Technical Architecture -->
+<section id="architecture">
+  <h2><span class="section-num">10</span> Technical Architecture</h2>
+
+  <h3>System Overview</h3>
+  <pre><code>┌──────────────────────────────────────────────────────────────┐
+│                        VYSE SYSTEM                           │
+│                                                              │
+│  [Camera/RTSP]                                               │
+│       │                                                      │
+│       ▼                                                      │
+│  ┌─────────────────────────────────────────────────────┐     │
+│  │              VISION AGENT                           │     │
+│  │  ┌───────────────┐  ┌───────────────────────────┐  │     │
+│  │  │  Frame Reader │  │  Async Frame Queue        │  │     │
+│  │  │  (asyncio)    │→ │  (asyncio.Queue, maxsize) │  │     │
+│  │  └───────────────┘  └──────────┬────────────────┘  │     │
+│  │                                │                   │     │
+│  │         ┌──────────────────────┤                   │     │
+│  │         ▼                      ▼                   │     │
+│  │  ┌─────────────┐      ┌─────────────────────┐     │     │
+│  │  │ YOLOv8      │      │ MediaPipe           │     │     │
+│  │  │ Detector    │      │ Face+Pose Analyzer  │     │     │
+│  │  └──────┬──────┘      └─────────┬───────────┘     │     │
+│  │         └──────────┬────────────┘                  │     │
+│  │                    ▼                               │     │
+│  │         ┌──────────────────────┐                   │     │
+│  │         │ DetectionEvent Bus   │  (asyncio.Queue)  │     │
+│  │         └──────────┬───────────┘                  │     │
+│  └────────────────────┼─────────────────────────────-┘     │
+│                        │                                     │
+│                        ▼                                     │
+│  ┌─────────────────────────────────────────────────────┐     │
+│  │              RISK AGENT                             │     │
+│  │   Temporal Rule Engine · Severity Scorer            │     │
+│  │   Sliding Window State · Deduplication              │     │
+│  │                        │                            │     │
+│  │            ┌───────────▼─────────────┐             │     │
+│  │            │   IncidentEvent Bus     │             │     │
+│  └────────────┼─────────────────────────┼─────────────┘     │
+│               │                         │                    │
+│               ▼                         ▼                    │
+│  ┌─────────────────────┐    ┌────────────────────────────┐   │
+│  │    ALERT AGENT      │    │     ANALYTICS AGENT        │   │
+│  │  Webhook · Email    │    │  SQLite/PostgreSQL Writer   │   │
+│  │  WebSocket · Slack  │    │  Aggregations · Reports    │   │
+│  └─────────────────────┘    └─────────────┬──────────────┘   │
+│                                           │                  │
+│                              ┌────────────▼─────────────┐   │
+│                              │       REST API            │   │
+│                              │  FastAPI · WebSocket      │   │
+│                              └────────────┬─────────────┘   │
+│                                           │                  │
+│                              ┌────────────▼─────────────┐   │
+│                              │    NEXT.JS DASHBOARD      │   │
+│                              └──────────────────────────┘   │
+└──────────────────────────────────────────────────────────────┘</code></pre>
+
+  <h3>Agent Communication Protocol</h3>
+  <p>Agents communicate exclusively through typed Python dataclasses passed over <code>asyncio.Queue</code> objects. No shared mutable state. Each agent runs as a separate <code>asyncio</code> coroutine. The pattern is a classic producer-consumer pipeline with backpressure.</p>
+
+  <pre><code>from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Optional, List, Dict, Any
+
+class Severity(Enum):
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3
+    CRITICAL = 4
+
+@dataclass
+class DetectionEvent:
+    frame_id: int
+    timestamp: datetime
+    camera_id: str
+    detection_type: str          # "no-helmet", "ear_low", "phone", "zone_breach"
+    confidence: float
+    bbox: tuple                  # (x1, y1, x2, y2)
+    zone: Optional[str]
+    metadata: Dict[str, Any]     # EAR value, zone_id, etc.
+
+@dataclass
+class Incident:
+    incident_id: str
+    created_at: datetime
+    camera_id: str
+    zone: Optional[str]
+    incident_type: str
+    severity: Severity
+    trigger_events: List[DetectionEvent]
+    rule_id: str
+    frame_snapshot_path: Optional[str]
+    acknowledged: bool = False</code></pre>
+
+  <h3>Async Video Inference Pipeline</h3>
+  <p>The pipeline uses Python's <code>asyncio</code> with strategic <code>executor</code> offloading for CPU/GPU-bound work (YOLO inference) to avoid blocking the event loop:</p>
+
+  <pre><code>import asyncio
+import cv2
+from concurrent.futures import ThreadPoolExecutor
+
+class VisionAgent:
+    def __init__(self, camera_url: str, detection_queue: asyncio.Queue):
+        self.cap = cv2.VideoCapture(camera_url)
+        self.queue = detection_queue
+        self.executor = ThreadPoolExecutor(max_workers=2)
+        self.yolo = YOLO("yolov8n.pt")
+        self.mp_face = mp.solutions.face_mesh.FaceMesh(...)
+
+    async def run(self):
+        loop = asyncio.get_event_loop()
+        while True:
+            ret, frame = self.cap.read()
+            if not ret:
+                await asyncio.sleep(0.01)
+                continue
+
+            # Offload CPU/GPU inference to thread pool
+            yolo_results, face_results = await asyncio.gather(
+                loop.run_in_executor(self.executor, self._run_yolo, frame),
+                loop.run_in_executor(self.executor, self._run_mediapipe, frame)
+            )
+
+            events = self._parse_results(yolo_results, face_results, frame)
+            for event in events:
+                await self.queue.put(event)   # backpressure if queue full
+
+    def _run_yolo(self, frame): ...
+    def _run_mediapipe(self, frame): ...
+    def _parse_results(self, yolo, face, frame) -> List[DetectionEvent]: ...</code></pre>
+</section>
+
+<!-- 11. Tech Stack -->
+<section id="tech-stack">
+  <h2><span class="section-num">11</span> Tech Stack</h2>
+
+  <table class="tech-table">
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Technology</th>
+        <th>Version</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="layer">Detection / CV</td>
+        <td class="tool">ultralytics (YOLOv8)</td>
+        <td>8.x</td>
+        <td>Object detection — PPE, phone, person classes. YOLOv8n for speed, YOLOv8m for accuracy on GPU</td>
+      </tr>
+      <tr>
+        <td class="layer">Face / Pose</td>
+        <td class="tool">MediaPipe</td>
+        <td>0.10+</td>
+        <td>Face Mesh (EAR computation), Pose (skeletal keypoints for fall detection)</td>
+      </tr>
+      <tr>
+        <td class="layer">Object Tracking</td>
+        <td class="tool">ByteTrack (lap)</td>
+        <td>0.x</td>
+        <td>Persistent worker IDs across frames. Required so temporal rules reason about a specific person, not per-frame detections</td>
+      </tr>
+      <tr>
+        <td class="layer">Inference Runtime</td>
+        <td class="tool">ONNX Runtime + TensorRT</td>
+        <td>1.17+ / 10.x</td>
+        <td>Export YOLOv8 to ONNX for 2–3× CPU speedup; TensorRT for NVIDIA Jetson edge deployment</td>
+      </tr>
+      <tr>
+        <td class="layer">Vision I/O</td>
+        <td class="tool">OpenCV</td>
+        <td>4.x</td>
+        <td>Camera capture, frame I/O, annotation rendering, MJPEG streaming</td>
+      </tr>
+      <tr>
+        <td class="layer">Async Runtime</td>
+        <td class="tool">Python asyncio</td>
+        <td>3.11+</td>
+        <td>Agent event loop, Queue-based communication, coroutine scheduling</td>
+      </tr>
+      <tr>
+        <td class="layer">API Server</td>
+        <td class="tool">FastAPI</td>
+        <td>0.110+</td>
+        <td>REST endpoints for incidents/analytics, WebSocket for live feed and incident push</td>
+      </tr>
+      <tr>
+        <td class="layer">Config</td>
+        <td class="tool">Pydantic + YAML</td>
+        <td>2.x</td>
+        <td>Typed configuration models, rule definitions, zone polygon configs</td>
+      </tr>
+      <tr>
+        <td class="layer">Storage (dev)</td>
+        <td class="tool">SQLite</td>
+        <td>3.x</td>
+        <td>Local incident log, analytics tables. Zero-config for development</td>
+      </tr>
+      <tr>
+        <td class="layer">Storage (prod)</td>
+        <td class="tool">PostgreSQL + TimescaleDB</td>
+        <td>16.x / 2.x</td>
+        <td>Time-series incident data, high-frequency detection events, continuous aggregates</td>
+      </tr>
+      <tr>
+        <td class="layer">Logging</td>
+        <td class="tool">structlog</td>
+        <td>23.x</td>
+        <td>Structured JSON logging with context binding per agent. Machine-parseable in prod</td>
+      </tr>
+      <tr>
+        <td class="layer">Dashboard</td>
+        <td class="tool">Next.js + React</td>
+        <td>14+ / 18+</td>
+        <td>Server-side rendered dashboard with real-time WebSocket incident feed (App Router, TypeScript strict)</td>
+      </tr>
+      <tr>
+        <td class="layer">UI Components</td>
+        <td class="tool">shadcn/ui + Tailwind</td>
+        <td>latest</td>
+        <td>Copy-paste component primitives owned by the codebase. Tailwind 3.4+ for styling. Same stack Linear, Vercel, Cal.com use</td>
+      </tr>
+      <tr>
+        <td class="layer">Motion</td>
+        <td class="tool">Framer Motion</td>
+        <td>11.x</td>
+        <td>Page transitions, incident-card enter/exit, alert pulses. The polish layer that separates "project" from "product"</td>
+      </tr>
+      <tr>
+        <td class="layer">Charts</td>
+        <td class="tool">Recharts</td>
+        <td>2.x</td>
+        <td>Incident frequency, severity distribution, heatmaps, trend charts</td>
+      </tr>
+      <tr>
+        <td class="layer">Experiment Tracking</td>
+        <td class="tool">Weights &amp; Biases (optional)</td>
+        <td>0.17+</td>
+        <td>Tracks every fine-tune run, hyperparameters, validation curves. Free tier sufficient. Strong recruiter signal</td>
+      </tr>
+      <tr>
+        <td class="layer">Dataset Versioning</td>
+        <td class="tool">DVC</td>
+        <td>3.x</td>
+        <td>Version-control large dataset files with Git-friendly metadata. Required for reproducible model training</td>
+      </tr>
+      <tr>
+        <td class="layer">Containerization</td>
+        <td class="tool">Docker + Docker Compose</td>
+        <td>24+</td>
+        <td>Multi-service local deployment (API + DB + dashboard). GPU passthrough with nvidia-docker</td>
+      </tr>
+      <tr>
+        <td class="layer">Testing</td>
+        <td class="tool">pytest + pytest-asyncio</td>
+        <td>7.x</td>
+        <td>Async agent unit tests, detection pipeline integration tests, mock camera feeds</td>
+      </tr>
+      <tr>
+        <td class="layer">Datasets</td>
+        <td class="tool">Roboflow Universe</td>
+        <td>–</td>
+        <td>Pre-labeled PPE datasets for fine-tuning (CHV, SHEL5K, Construction Safety)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Directory Structure</h3>
+  <pre><code>vyse/
+├── backend/                       # Python service (FastAPI + agents)
+│   ├── vyse/
+│   │   ├── agents/
+│   │   │   ├── vision_agent.py       # Frame ingestion → YOLOv8 + MediaPipe + ByteTrack
+│   │   │   ├── risk_agent.py         # Temporal rule engine + incident scoring
+│   │   │   ├── alert_agent.py        # Multi-channel notification dispatch
+│   │   │   └── analytics_agent.py    # Time-series writes + aggregations
+│   │   ├── core/
+│   │   │   ├── models.py             # DetectionEvent, Incident, Severity dataclasses
+│   │   │   ├── config.py             # Pydantic settings + YAML rule loader
+│   │   │   ├── event_bus.py          # Typed asyncio.Queue wrappers
+│   │   │   ├── logging.py            # structlog setup with bound context
+│   │   │   └── orchestrator.py       # Agent lifecycle (asyncio.TaskGroup)
+│   │   ├── detectors/
+│   │   │   ├── ppe_detector.py       # YOLOv8 PPE class logic
+│   │   │   ├── drowsiness_detector.py# MediaPipe EAR computation
+│   │   │   ├── phone_detector.py     # Phone class + zone filter
+│   │   │   ├── pose_detector.py      # MediaPipe Pose for fall / posture
+│   │   │   └── zone_detector.py      # Polygon breach (Shapely)
+│   │   ├── tracking/
+│   │   │   └── bytetrack.py          # ByteTrack wrapper, ID assignment
+│   │   ├── ml/
+│   │   │   ├── export_onnx.py        # YOLOv8 → ONNX export script
+│   │   │   ├── export_trt.py         # ONNX → TensorRT engine builder
+│   │   │   ├── eval_harness.py       # mAP, EAR-recall evaluation
+│   │   │   └── training/             # Fine-tune scripts, W&B integration
+│   │   ├── api/
+│   │   │   ├── main.py               # FastAPI app + CORS + lifespan
+│   │   │   ├── routes/
+│   │   │   │   ├── incidents.py
+│   │   │   │   ├── analytics.py
+│   │   │   │   ├── config.py
+│   │   │   │   └── stream.py         # WebSocket endpoints
+│   │   │   ├── dependencies.py
+│   │   │   └── metrics.py            # Prometheus exporter
+│   │   ├── db/
+│   │   │   ├── models.py             # SQLAlchemy ORM models
+│   │   │   ├── session.py            # Async session factory
+│   │   │   ├── migrations/           # Alembic
+│   │   │   └── queries.py            # Analytics aggregation queries
+│   │   ├── integrations/
+│   │   │   ├── slack.py
+│   │   │   ├── teams.py
+│   │   │   ├── pagerduty.py
+│   │   │   ├── twilio.py
+│   │   │   └── email_smtp.py
+│   │   └── __main__.py               # `python -m vyse` entrypoint
+│   ├── tests/
+│   │   ├── unit/                     # Per-agent / detector unit tests
+│   │   ├── integration/              # End-to-end pipeline tests
+│   │   └── fixtures/                 # Sample frames, mock streams
+│   ├── pyproject.toml
+│   ├── requirements.txt
+│   └── Dockerfile
+├── dashboard/                     # Next.js 14 app (App Router, TS strict)
+│   ├── app/
+│   │   ├── (auth)/                   # Future auth routes
+│   │   ├── live/page.tsx             # Live feed + active incidents
+│   │   ├── incidents/page.tsx        # Incident timeline + filters
+│   │   ├── analytics/page.tsx        # Charts and reports
+│   │   ├── rules/page.tsx            # YAML rule + zone editor
+│   │   ├── settings/page.tsx         # Cameras, channels, thresholds
+│   │   ├── layout.tsx
+│   │   └── page.tsx                  # Overview / homepage
+│   ├── components/
+│   │   ├── ui/                       # shadcn primitives (button, card, sheet…)
+│   │   ├── live-feed.tsx
+│   │   ├── incident-card.tsx
+│   │   ├── incident-feed.tsx
+│   │   ├── severity-badge.tsx
+│   │   ├── alert-banner.tsx
+│   │   ├── kpi-card.tsx
+│   │   ├── zone-editor.tsx
+│   │   └── theme-provider.tsx
+│   ├── lib/
+│   │   ├── api.ts                    # Typed fetch wrapper
+│   │   ├── ws.ts                     # WebSocket hook
+│   │   └── utils.ts                  # cn() helper
+│   ├── styles/globals.css
+│   ├── tailwind.config.ts
+│   ├── components.json               # shadcn config
+│   ├── package.json
+│   └── Dockerfile
+├── config/
+│   ├── rules.yaml                    # Temporal rule definitions
+│   ├── zones.yaml                    # Zone polygon coordinates per camera
+│   └── settings.yaml                 # Camera URLs, thresholds, channel configs
+├── data/                          # Datasets (DVC-tracked, gitignored binaries)
+│   ├── raw/
+│   ├── annotated/
+│   ├── splits/
+│   └── .dvcignore
+├── models/                        # Trained weights (gitignored, DVC-tracked)
+│   ├── yolov8n.pt
+│   ├── yolov8-ppe-finetuned.pt
+│   └── exports/
+│       ├── ppe.onnx
+│       └── ppe.engine                # TensorRT engine
+├── scripts/
+│   ├── seed_demo.py                  # Generate sample incidents for dashboard
+│   ├── run_local.sh                  # One-shot dev run
+│   └── benchmark.py                  # FPS / latency benchmark harness
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── DEPLOYMENT.md
+│   └── CONTRIBUTING.md
+├── .github/workflows/ci.yml
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── .env.example
+├── .pre-commit-config.yaml
+├── .gitignore
+├── LICENSE
+├── README.md
+└── Vyse_PRD.html</code></pre>
+</section>
+
+<!-- 12. Data Models -->
+<section id="data-models">
+  <h2><span class="section-num">12</span> Data Models</h2>
+
+  <h3>Incidents Table</h3>
+  <div class="schema">
+    <span class="comment">-- Core incident record written by Analytics Agent</span><br>
+    <span class="type">CREATE TABLE</span> incidents (<br>
+    &nbsp;&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">UUID</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">PRIMARY KEY</span>,<br>
+    &nbsp;&nbsp;created_at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">TIMESTAMPTZ</span>&nbsp;<span class="type">NOT NULL</span>,<br>
+    &nbsp;&nbsp;camera_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">VARCHAR(64)</span>&nbsp;<span class="type">NOT NULL</span>,<br>
+    &nbsp;&nbsp;zone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">VARCHAR(64)</span>,<br>
+    &nbsp;&nbsp;incident_type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">VARCHAR(64)</span>&nbsp;<span class="type">NOT NULL</span>,&nbsp;<span class="comment">-- "PPE_HELMET", "DROWSINESS", etc.</span><br>
+    &nbsp;&nbsp;severity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">SMALLINT</span>&nbsp;&nbsp;&nbsp;<span class="type">NOT NULL</span>,&nbsp;<span class="comment">-- 1=LOW, 2=MED, 3=HIGH, 4=CRITICAL</span><br>
+    &nbsp;&nbsp;rule_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">VARCHAR(64)</span>&nbsp;<span class="type">NOT NULL</span>,<br>
+    &nbsp;&nbsp;confidence_avg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">FLOAT</span>,<br>
+    &nbsp;&nbsp;frame_snapshot_url&nbsp;<span class="type">TEXT</span>,<br>
+    &nbsp;&nbsp;acknowledged&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">BOOLEAN</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">DEFAULT FALSE</span>,<br>
+    &nbsp;&nbsp;acknowledged_at&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">TIMESTAMPTZ</span>,<br>
+    &nbsp;&nbsp;metadata&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">JSONB</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- EAR value, person count, etc.</span><br>
+    );<br><br>
+    <span class="comment">-- TimescaleDB hypertable for time-series queries</span><br>
+    <span class="type">SELECT</span> create_hypertable(<span class="val">'incidents'</span>, <span class="val">'created_at'</span>);
+  </div>
+
+  <h3>Detection Events Table</h3>
+  <div class="schema">
+    <span class="comment">-- Raw detection events (high volume — partitioned by hour)</span><br>
+    <span class="type">CREATE TABLE</span> detection_events (<br>
+    &nbsp;&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">BIGSERIAL</span>&nbsp;&nbsp;&nbsp;<span class="type">PRIMARY KEY</span>,<br>
+    &nbsp;&nbsp;frame_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">BIGINT</span>,<br>
+    &nbsp;&nbsp;timestamp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">TIMESTAMPTZ</span>&nbsp;<span class="type">NOT NULL</span>,<br>
+    &nbsp;&nbsp;camera_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">VARCHAR(64)</span>,<br>
+    &nbsp;&nbsp;detection_type <span class="type">VARCHAR(64)</span>&nbsp;<span class="type">NOT NULL</span>,<br>
+    &nbsp;&nbsp;confidence&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">FLOAT</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">NOT NULL</span>,<br>
+    &nbsp;&nbsp;bbox&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">JSONB</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- {x1, y1, x2, y2}</span><br>
+    &nbsp;&nbsp;zone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">VARCHAR(64)</span>,<br>
+    &nbsp;&nbsp;metadata&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">JSONB</span><br>
+    );
+  </div>
+
+  <h3>Alert Dispatches Table</h3>
+  <div class="schema">
+    <span class="type">CREATE TABLE</span> alert_dispatches (<br>
+    &nbsp;&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">UUID</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">PRIMARY KEY</span>,<br>
+    &nbsp;&nbsp;incident_id&nbsp;&nbsp;&nbsp;<span class="type">UUID</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">REFERENCES</span> incidents(id),<br>
+    &nbsp;&nbsp;dispatched_at&nbsp;<span class="type">TIMESTAMPTZ</span>&nbsp;<span class="type">NOT NULL</span>,<br>
+    &nbsp;&nbsp;channel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">VARCHAR(32)</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- "webhook", "email", "websocket"</span><br>
+    &nbsp;&nbsp;status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">VARCHAR(16)</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- "sent", "failed", "pending"</span><br>
+    &nbsp;&nbsp;response_code&nbsp;<span class="type">SMALLINT</span>,<br>
+    &nbsp;&nbsp;error_msg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">TEXT</span><br>
+    );
+  </div>
+</section>
+
+<!-- 13. API Design -->
+<section id="api">
+  <h2><span class="section-num">13</span> API Design</h2>
+  <p>All REST endpoints are served by FastAPI at <code>http://localhost:8000</code>. WebSocket endpoints provide real-time data streams.</p>
+
+  <h3>Incidents</h3>
+  <div class="endpoint"><span class="method method-get">GET</span> <span class="endpoint-path">/api/v1/incidents</span> <span class="endpoint-desc">List incidents with filters (severity, type, zone, date range)</span></div>
+  <div class="endpoint"><span class="method method-get">GET</span> <span class="endpoint-path">/api/v1/incidents/{incident_id}</span> <span class="endpoint-desc">Get single incident with full metadata and snapshot</span></div>
+  <div class="endpoint"><span class="method method-post">POST</span> <span class="endpoint-path">/api/v1/incidents/{incident_id}/acknowledge</span> <span class="endpoint-desc">Mark incident as reviewed by safety manager</span></div>
+  <div class="endpoint"><span class="method method-get">GET</span> <span class="endpoint-path">/api/v1/incidents/export</span> <span class="endpoint-desc">Export incidents as CSV/JSON for compliance reporting</span></div>
+
+  <h3>Analytics</h3>
+  <div class="endpoint"><span class="method method-get">GET</span> <span class="endpoint-path">/api/v1/analytics/summary</span> <span class="endpoint-desc">Aggregated counts by type/severity for given time range</span></div>
+  <div class="endpoint"><span class="method method-get">GET</span> <span class="endpoint-path">/api/v1/analytics/trends</span> <span class="endpoint-desc">Time-series incident data (hourly/daily) for charting</span></div>
+  <div class="endpoint"><span class="method method-get">GET</span> <span class="endpoint-path">/api/v1/analytics/zones</span> <span class="endpoint-desc">Incident breakdown per zone — heatmap data</span></div>
+  <div class="endpoint"><span class="method method-get">GET</span> <span class="endpoint-path">/api/v1/analytics/model-health</span> <span class="endpoint-desc">Avg confidence, FPS, queue depth, missed frames</span></div>
+
+  <h3>Configuration</h3>
+  <div class="endpoint"><span class="method method-get">GET</span> <span class="endpoint-path">/api/v1/config/rules</span> <span class="endpoint-desc">List all active temporal rules</span></div>
+  <div class="endpoint"><span class="method method-post">POST</span> <span class="endpoint-path">/api/v1/config/rules</span> <span class="endpoint-desc">Create or update a rule (hot-reload without restart)</span></div>
+  <div class="endpoint"><span class="method method-get">GET</span> <span class="endpoint-path">/api/v1/config/zones</span> <span class="endpoint-desc">List zone polygon definitions per camera</span></div>
+
+  <h3>Real-Time Streams (WebSocket)</h3>
+  <div class="endpoint"><span class="method method-ws">WS</span> <span class="endpoint-path">/ws/stream/incidents</span> <span class="endpoint-desc">Push new incidents to connected dashboard clients</span></div>
+  <div class="endpoint"><span class="method method-ws">WS</span> <span class="endpoint-path">/ws/stream/feed/{camera_id}</span> <span class="endpoint-desc">Annotated MJPEG-over-WebSocket live camera view</span></div>
+
+  <h3>Sample Incident Response</h3>
+  <pre><code>{
+  "incident_id": "4f8a2b1c-...",
+  "created_at": "2026-05-22T08:14:33Z",
+  "camera_id": "cam-floor-1",
+  "zone": "machinery",
+  "incident_type": "PPE_NO_HELMET_SUSTAINED",
+  "severity": "HIGH",
+  "rule_id": "PPE_NO_HELMET_SUSTAINED",
+  "confidence_avg": 0.81,
+  "frame_snapshot_url": "/snapshots/4f8a2b1c.jpg",
+  "acknowledged": false,
+  "metadata": {
+    "detection_count": 14,
+    "window_seconds": 8,
+    "person_bbox": [122, 45, 280, 310],
+    "zone_risk_boost": true
+  }
+}</code></pre>
+</section>
+
+<!-- 14. NFR -->
+<section id="nfr">
+  <h2><span class="section-num">14</span> Non-Functional Requirements</h2>
+
+  <h3>Performance</h3>
+  <table class="tech-table">
+    <thead><tr><th>Metric</th><th>Target (GPU)</th><th>Target (CPU)</th></tr></thead>
+    <tbody>
+      <tr><td>Inference latency per frame</td><td>&lt; 80ms (YOLOv8n)</td><td>&lt; 250ms</td></tr>
+      <tr><td>End-to-end detection → incident</td><td>&lt; 500ms</td><td>&lt; 1.5s</td></tr>
+      <tr><td>Alert dispatch (webhook)</td><td>&lt; 200ms from incident</td><td>&lt; 200ms from incident</td></tr>
+      <tr><td>Dashboard feed latency</td><td>&lt; 150ms (WebSocket)</td><td>&lt; 300ms</td></tr>
+      <tr><td>API response time (incidents list)</td><td>&lt; 100ms (p99)</td><td>&lt; 100ms (p99)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Scalability</h3>
+  <ul>
+    <li>Single-camera support in v1.0; design must accommodate N-camera fan-out in v1.1 (one Vision Agent coroutine per camera)</li>
+    <li>Detection event volume: up to 15 FPS × 10 cameras = 150 events/second — asyncio Queue handles this without external message broker in v1</li>
+    <li>Incident database must efficiently query 100K+ records with pagination and indexed filters</li>
+    <li>PostgreSQL + TimescaleDB chosen for write-optimized time-series at scale</li>
+  </ul>
+
+  <h3>Reliability</h3>
+  <ul>
+    <li>Camera stream reconnect with exponential backoff (5 max retries before dead-letter alert)</li>
+    <li>Agent crash isolation: one agent panic must not bring down the orchestrator — wrap each in <code>asyncio.TaskGroup</code> with restart policy</li>
+    <li>All unacknowledged critical incidents must survive service restart (persisted before alert dispatch)</li>
+    <li>Graceful shutdown: drain queues before process exit, no lost in-flight incidents</li>
+  </ul>
+
+  <h3>Security &amp; Privacy</h3>
+  <ul>
+    <li>No raw video leaves the local network — only structured metadata (bboxes, confidence, EAR values)</li>
+    <li>Frame snapshots stored locally with configurable retention policy (default: 30 days)</li>
+    <li>API endpoints protected with API key authentication (Bearer token) in production mode</li>
+    <li>Configurable face-blurring for non-safety-relevant zones (GDPR preparedness)</li>
+  </ul>
+
+  <h3>Observability</h3>
+  <ul>
+    <li>Structured JSON logs from all agents via <code>structlog</code> with agent name, camera ID, and incident ID as bound context</li>
+    <li>Prometheus-compatible metrics endpoint (<code>/metrics</code>) exposing: queue depths, frame processing rate, inference time histogram, incident count by severity</li>
+    <li>Health check endpoint (<code>/health</code>) for Docker health checks and load balancer probes</li>
+    <li>Model confidence histogram logged every 60 seconds to detect dataset drift</li>
+  </ul>
+</section>
+
+<!-- 15. Roadmap -->
+<section id="roadmap">
+  <h2><span class="section-num">15</span> Development Roadmap</h2>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 0 — Foundation &amp; Project Setup</div>
+      <div class="phase-timeline">Week 1 · 5–7 days</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li>Initialize repo structure — all directories, <code>__init__.py</code>, <code>.gitignore</code>, <code>requirements.txt</code></li>
+        <li>Set up virtual environment, install ultralytics, mediapipe, opencv-python, fastapi, pydantic, structlog</li>
+        <li>Implement <code>core/models.py</code> — all dataclasses (<code>DetectionEvent</code>, <code>Incident</code>, <code>Severity</code>)</li>
+        <li>Implement <code>core/config.py</code> — Pydantic Settings with YAML rule loader</li>
+        <li>Implement <code>core/event_bus.py</code> — typed Queue wrappers with <code>put_nowait</code> + <code>get_timeout</code></li>
+        <li>Write <code>rules.yaml</code> and <code>zones.yaml</code> with initial rule definitions</li>
+        <li>Verify YOLOv8n loads and runs inference on a test image</li>
+        <li>Verify MediaPipe Face Mesh runs on a webcam frame and produces 468 landmarks</li>
+        <li><strong>Milestone:</strong> Core data models defined, models loading successfully, basic config working</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 1 — Vision Agent MVP</div>
+      <div class="phase-timeline">Weeks 2–3 · 10–12 days</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li>Implement <code>detectors/ppe_detector.py</code> — YOLOv8 inference, class filtering, bbox extraction</li>
+        <li>Implement <code>detectors/drowsiness_detector.py</code> — MediaPipe EAR computation (left + right eye landmarks), threshold logic</li>
+        <li>Implement <code>detectors/phone_detector.py</code> — phone class detection with zone-awareness</li>
+        <li>Implement <code>detectors/zone_detector.py</code> — polygon point-in-polygon test using Shapely or pure math</li>
+        <li>Build <code>agents/vision_agent.py</code> — async frame reader, parallel inference via <code>ThreadPoolExecutor</code>, event emission</li>
+        <li>Test on prerecorded safety violation videos and webcam feed</li>
+        <li>Implement annotated frame rendering (bboxes, labels, EAR overlay, zone polygon drawing)</li>
+        <li>Write unit tests for each detector with mock frames</li>
+        <li><strong>Milestone:</strong> Vision Agent detects PPE violations and drowsiness on live webcam and emits DetectionEvents. Demo-able.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 2 — Risk Agent &amp; Alert Agent</div>
+      <div class="phase-timeline">Weeks 4–5 · 10–14 days</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li>Implement <code>agents/risk_agent.py</code> — sliding window state machine, YAML rule evaluation, severity scoring, deduplication, Incident creation</li>
+        <li>Implement temporal rule evaluator — condition parsing, context boost logic, cooldown tracking per (camera, zone, type)</li>
+        <li>Implement <code>agents/alert_agent.py</code> — channel router, console handler, webhook dispatcher (httpx async), email dispatcher (aiosmtplib)</li>
+        <li>Implement <code>core/orchestrator.py</code> — <code>asyncio.TaskGroup</code> managing all 4 agents + graceful shutdown</li>
+        <li>End-to-end test: Vision → Risk → Alert pipeline running on live feed</li>
+        <li>Test false positive reduction: verify 2-second helmet removal does NOT trigger incident</li>
+        <li>Write integration tests for Risk Agent with synthetic event sequences</li>
+        <li><strong>Milestone:</strong> Full 3-agent pipeline running. PPE violation generates alert in Slack/webhook within &lt;2 seconds. Alert fatigue eliminated by temporal rules.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 3 — API, Database &amp; Analytics Agent</div>
+      <div class="phase-timeline">Weeks 6–7 · 10–12 days</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li>Set up SQLAlchemy models and Alembic migrations for <code>incidents</code>, <code>detection_events</code>, <code>alert_dispatches</code></li>
+        <li>Implement <code>agents/analytics_agent.py</code> — async writer consuming all incident events, daily aggregation queries</li>
+        <li>Build FastAPI app with all REST endpoints — incidents CRUD, analytics summary, trends, export</li>
+        <li>Implement WebSocket endpoint for live incident push</li>
+        <li>Add <code>/metrics</code> Prometheus endpoint and <code>/health</code> health check</li>
+        <li>Implement structured logging with structlog — per-agent context binding</li>
+        <li>Docker Compose setup: <code>api</code> service + <code>postgres</code> + <code>adminer</code> (dev DB UI)</li>
+        <li>Write API integration tests using <code>httpx.AsyncClient</code> with <code>pytest-asyncio</code></li>
+        <li><strong>Milestone:</strong> Full API running. Incidents queryable via REST. Analytics data populating. Docker Compose brings up entire system.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 4 — Dashboard &amp; Polish</div>
+      <div class="phase-timeline">Weeks 8–10 · 12–15 days</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li>Bootstrap Next.js 14 app with TypeScript, Tailwind CSS</li>
+        <li>Build <code>LiveFeed</code> component — WebSocket video stream + zone overlay + detection overlay</li>
+        <li>Build <code>IncidentFeed</code> component — real-time scrolling list with severity badges, auto-scroll to new incidents</li>
+        <li>Build Analytics page — recharts: hourly heatmap, severity donut, zone bar chart, 7-day trend line</li>
+        <li>Build Rules Config page — YAML editor with live validation, rule toggle switches</li>
+        <li>Fine-tune YOLOv8 on a PPE-specific dataset (Roboflow Construction Safety dataset)</li>
+        <li>Performance profiling — reduce inference latency, optimize asyncio queue throughput</li>
+        <li>Write comprehensive README with architecture diagram, setup guide, and demo video link</li>
+        <li><strong>Milestone:</strong> Full Vyse system running with dashboard. Demo-ready for portfolio, interviews, and GitHub.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 5 — v1.1 Scale Features</div>
+      <div class="phase-timeline">Weeks 11–14 · As available</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li>Multi-camera support — Vision Agent factory, per-camera coroutines, camera management UI</li>
+        <li>LLM incident narration — send incident metadata to Groq/OpenAI for human-readable safety report generation</li>
+        <li>Worker shift tracking — shift config, per-shift compliance reports, shift-handover summary</li>
+        <li>Predictive risk scoring — ML model on incident history to predict high-risk periods/zones</li>
+        <li>NVIDIA Jetson optimization — TensorRT export of YOLOv8, edge deployment guide</li>
+        <li>Kubernetes Helm chart for production deployment</li>
+        <li>SaaS wrapper — multi-tenant auth (Clerk/Auth.js), organization management, billing (Stripe)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 16. KPIs -->
+<section id="kpis">
+  <h2><span class="section-num">16</span> Metrics &amp; KPIs</h2>
+
+  <h3>System Performance KPIs</h3>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-metric">Detection Accuracy</div>
+      <div class="kpi-target">&gt; 90%</div>
+      <div class="kpi-desc">mAP@50 for PPE classes on validation set. YOLOv8l achieves 91.7% on CHV dataset baseline.</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-metric">False Positive Rate</div>
+      <div class="kpi-target">&lt; 5%</div>
+      <div class="kpi-desc">After temporal rule filtering. Target: safety managers trust every alert.</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-metric">E2E Latency</div>
+      <div class="kpi-target">&lt; 500ms</div>
+      <div class="kpi-desc">Camera frame to alert dispatch on GPU hardware. Critical for real-time intervention.</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-metric">EAR Drowsy Recall</div>
+      <div class="kpi-target">&gt; 95%</div>
+      <div class="kpi-desc">Drowsiness events correctly flagged. Recall prioritized over precision for safety.</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-metric">Queue Backlog</div>
+      <div class="kpi-target">&lt; 30 frames</div>
+      <div class="kpi-desc">Risk Agent queue depth under sustained load — backpressure indicator.</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-metric">System Uptime</div>
+      <div class="kpi-target">&gt; 99.5%</div>
+      <div class="kpi-desc">Target for agent orchestrator across 8-hour shifts with camera reconnect logic.</div>
+    </div>
+  </div>
+
+  <h3>Business / Product KPIs (v2 onward)</h3>
+  <ul>
+    <li><strong>Incident Reduction Rate:</strong> % reduction in safety incidents per site after 30 days of deployment (target: 40%+, benchmarked against Protex AI's 80% in 10 weeks for Marks &amp; Spencer)</li>
+    <li><strong>Alert Acknowledgement Time:</strong> Average time from incident creation to safety manager acknowledgement (target: &lt; 5 min for HIGH, &lt; 2 min for CRITICAL)</li>
+    <li><strong>Compliance Score:</strong> % of worker-hours in compliant PPE state per shift</li>
+    <li><strong>Customer Time-to-Value:</strong> Hours from installation to first detected incident (target: &lt; 4 hours)</li>
+  </ul>
+</section>
+
+<!-- 17. Startup Scale Path -->
+<section id="startup">
+  <h2><span class="section-num">17</span> Startup Scale Path</h2>
+  <p>
+    Vyse is designed as a portfolio project first, but the architecture is production-grade by intent. The path from student project to startup is well-mapped — the safety CV space has clear demand, clear willingness to pay, and no dominant open-source alternative at the SME tier.
+  </p>
+
+  <div class="horizon">
+    <div class="horizon-step">
+      <div class="horizon-num">01</div>
+      <div class="horizon-title">Portfolio MVP</div>
+      <div class="horizon-desc">Full working system. GitHub README + demo video. Resume line item demonstrating production CV engineering at Motive's level.</div>
+    </div>
+    <div class="horizon-step">
+      <div class="horizon-num">02</div>
+      <div class="horizon-title">Open Core</div>
+      <div class="horizon-desc">Publish core as MIT open source. Build community. Offer paid cloud dashboard, managed hosting, and custom model training as premium.</div>
+    </div>
+    <div class="horizon-step">
+      <div class="horizon-num">03</div>
+      <div class="horizon-title">Pakistan + MENA GTM</div>
+      <div class="horizon-desc">Target construction companies (CPEC projects), textile factories, and industrial zones. High PPE requirement, low existing AI penetration.</div>
+    </div>
+    <div class="horizon-step">
+      <div class="horizon-num">04</div>
+      <div class="horizon-title">SaaS Platform</div>
+      <div class="horizon-desc">Multi-tenant cloud. Per-camera-per-month pricing ($50–200/camera). Insurance partnerships for premium reduction incentives. Series A material.</div>
+    </div>
+  </div>
+
+  <h3>Monetization Models</h3>
+  <table class="tech-table">
+    <thead><tr><th>Model</th><th>Target</th><th>Pricing Signal</th></tr></thead>
+    <tbody>
+      <tr><td>Open Core (self-hosted)</td><td>Developers, SMEs with IT teams</td><td>Free — builds credibility</td></tr>
+      <tr><td>Managed Cloud SaaS</td><td>Mid-market factories, construction firms</td><td>$50–200/camera/month</td></tr>
+      <tr><td>Enterprise On-Prem License</td><td>Oil &amp; gas, ports, sensitive facilities</td><td>$20–80K/year site license</td></tr>
+      <tr><td>Custom Model Training</td><td>Industry-specific PPE (mining helmets, fire suits)</td><td>$5–15K one-time project</td></tr>
+      <tr><td>Compliance Report API</td><td>Insurance underwriters, EHS consultants</td><td>$500–2K/month API access</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Pakistan-Specific Opportunity</h3>
+  <ul>
+    <li>CPEC infrastructure projects across Punjab, KPK, Balochistan — hundreds of active construction sites with minimal AI monitoring</li>
+    <li>Textile sector (largest export earner) — factories legally required to meet ILO safety standards for export certification</li>
+    <li>NASTP (where Baymax was built) and NUTECH ecosystems as early adopter channels</li>
+    <li>SECP startup incentives and IGNITE grants available for AI/tech ventures</li>
+    <li>Low CAC in Pakistan market — direct outreach to EHS managers at 10–20 companies can seed first paying customers</li>
+  </ul>
+</section>
+
+<!-- 18. Risks -->
+<section id="risks">
+  <h2><span class="section-num">18</span> Risks &amp; Mitigations</h2>
+
+  <table class="risk-table">
+    <thead>
+      <tr>
+        <th>Risk</th>
+        <th>Severity</th>
+        <th>Probability</th>
+        <th>Mitigation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>High false positive rate erodes trust</strong><br><span style="font-size:12px; color:var(--text-faint)">Raw YOLO detections per-frame will generate noise</span></td>
+        <td><span class="sev-high">HIGH</span></td>
+        <td><span class="sev-high">HIGH</span></td>
+        <td>Temporal rule engine is the primary mitigation. Require N occurrences in M seconds. Configurable per-rule. Continuously tune thresholds based on false positive logs.</td>
+      </tr>
+      <tr>
+        <td><strong>PPE model doesn't generalize to site-specific gear</strong><br><span style="font-size:12px; color:var(--text-faint)">Custom helmets, colored vests, regional PPE variants</span></td>
+        <td><span class="sev-med">MEDIUM</span></td>
+        <td><span class="sev-med">MEDIUM</span></td>
+        <td>Fine-tune YOLOv8 on Roboflow Construction Safety dataset (~10K labeled images). Provide data collection UI for customer-specific fine-tuning in v2.</td>
+      </tr>
+      <tr>
+        <td><strong>Drowsiness detection unreliable with glasses/masks</strong><br><span style="font-size:12px; color:var(--text-faint)">Sunglasses, face masks block eye landmarks</span></td>
+        <td><span class="sev-med">MEDIUM</span></td>
+        <td><span class="sev-high">HIGH</span></td>
+        <td>Fall back to posture-based fatigue indicators when EAR unavailable. Flag "landmark unavailable" state separately. Tune blink-rate analysis as secondary signal.</td>
+      </tr>
+      <tr>
+        <td><strong>Latency too high on CPU-only environments</strong><br><span style="font-size:12px; color:var(--text-faint)">Many deployment sites won't have GPU</span></td>
+        <td><span class="sev-med">MEDIUM</span></td>
+        <td><span class="sev-med">MEDIUM</span></td>
+        <td>Use YOLOv8n (nano) by default — runs at ~15 FPS on modern CPU. Frame skip (process every 2nd frame). ONNX export for optimized CPU inference. Document hardware requirements clearly.</td>
+      </tr>
+      <tr>
+        <td><strong>Privacy / GDPR concerns from workers</strong><br><span style="font-size:12px; color:var(--text-faint)">Continuous video monitoring raises labor rights issues</span></td>
+        <td><span class="sev-high">HIGH</span></td>
+        <td><span class="sev-med">MEDIUM</span></td>
+        <td>No raw video stored by default (only snapshots on incident). Face blurring option for non-safety zones. GDPR-readiness documentation. Emphasize aggregate analytics over individual tracking.</td>
+      </tr>
+      <tr>
+        <td><strong>Camera stream reliability</strong><br><span style="font-size:12px; color:var(--text-faint)">RTSP streams drop, cameras go offline</span></td>
+        <td><span class="sev-low">LOW</span></td>
+        <td><span class="sev-high">HIGH</span></td>
+        <td>Automatic reconnect with exponential backoff. Dead-letter alert to safety manager if camera offline for &gt; 60 seconds. Health check endpoint reports camera status.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 19. Hardware Tiers & Deployment Matrix -->
+<section id="hardware">
+  <h2><span class="section-num">19</span> Hardware Tiers &amp; Deployment Matrix</h2>
+  <p>Vyse is built to span a 10× cost-and-capability range. A single facility can mix tiers — e.g. one beefy server for HQ and Jetson nodes at remote sites. Pick the tier that matches camera count and latency target.</p>
+
+  <h3>Reference Hardware Tiers</h3>
+  <table class="tech-table">
+    <thead>
+      <tr>
+        <th>Tier</th>
+        <th>Hardware</th>
+        <th>Cameras</th>
+        <th>FPS / cam</th>
+        <th>Inference Path</th>
+        <th>Use Case</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="layer">DEV</td>
+        <td class="tool">Any modern laptop (M-series Mac, Ryzen, etc.)</td>
+        <td>1</td>
+        <td>5–10</td>
+        <td>YOLOv8n PyTorch CPU</td>
+        <td>Local development, demos, recruiter calls</td>
+      </tr>
+      <tr>
+        <td class="layer">EDGE</td>
+        <td class="tool">NVIDIA Jetson Orin Nano 8GB</td>
+        <td>1–2</td>
+        <td>15</td>
+        <td>YOLOv8n TensorRT FP16</td>
+        <td>Remote sites, no network egress, on-camera-pole deployment</td>
+      </tr>
+      <tr>
+        <td class="layer">SMB</td>
+        <td class="tool">Mini PC + RTX 4060 (8GB)</td>
+        <td>4–8</td>
+        <td>15</td>
+        <td>YOLOv8s TensorRT FP16</td>
+        <td>Small factories, warehouses, single construction site</td>
+      </tr>
+      <tr>
+        <td class="layer">PROD</td>
+        <td class="tool">Server + RTX 4090 / L4 (24GB)</td>
+        <td>16–32</td>
+        <td>15</td>
+        <td>YOLOv8m TensorRT FP16, batched</td>
+        <td>Mid-market plant, multi-zone facility</td>
+      </tr>
+      <tr>
+        <td class="layer">ENTERPRISE</td>
+        <td class="tool">2× A100 / H100 cluster</td>
+        <td>64+</td>
+        <td>15–30</td>
+        <td>YOLOv8l TensorRT INT8, batched + ensemble</td>
+        <td>Refineries, ports, regional ops centers</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Camera Specifications</h3>
+  <ul>
+    <li><strong>Minimum:</strong> 1080p @ 15 FPS, H.264, RTSP over LAN. Most existing site cameras meet this.</li>
+    <li><strong>Recommended:</strong> 4MP IP camera, 25 FPS, H.265, varifocal lens covering target zone, IR for night-shift.</li>
+    <li><strong>Avoid:</strong> Wide-angle fisheye for PPE detection — distortion drops mAP by 8–12 percentage points unless lens-corrected upstream.</li>
+    <li><strong>Network:</strong> Budget 2–4 Mbps per camera for direct RTSP ingest, or 0.3 Mbps if site does pre-encoding.</li>
+  </ul>
+
+  <h3>Deployment Modes</h3>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>Local-Only (Air-Gapped)</h4>
+      <p>All inference, storage, dashboard on one box. No cloud egress. For oil &amp; gas, defense, hospitals.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Edge + Cloud Hybrid</h4>
+      <p>Inference at edge; only structured incidents replicated to managed Postgres for cross-site analytics.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Managed SaaS (v2)</h4>
+      <p>Site streams a thin gateway to Vyse cloud. Multi-tenant, per-camera billing. Series-A path.</p>
+    </div>
+    <div class="feature-card">
+      <h4>BYO-Cloud</h4>
+      <p>Customer deploys Vyse Helm chart to their own AKS/EKS/GKE cluster. Vyse provides chart + support.</p>
+    </div>
+  </div>
+
+  <div class="callout accent">
+    <div class="callout-label">Latency Budget Cheat Sheet</div>
+    Camera → Inference (≤80ms) → Risk Eval (≤30ms) → Persist Incident (≤50ms) → Alert Dispatch (≤200ms) → Dashboard Render (≤140ms) = <strong>~500ms end-to-end</strong> on GPU. Every component has a hard p99 budget enforced via Prometheus.
+  </div>
+</section>
+
+<!-- 20. MLOps & Dataset Strategy -->
+<section id="mlops">
+  <h2><span class="section-num">20</span> MLOps &amp; Dataset Strategy</h2>
+  <p>The hardest part of a production CV system is not the first model — it's the second. Drift, edge cases, new PPE variants, and customer-specific gear all force retrains. Vyse treats data, models, and evaluation as first-class artifacts from day one.</p>
+
+  <h3>Dataset Pipeline</h3>
+  <table class="tech-table">
+    <thead><tr><th>Stage</th><th>Tooling</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td class="layer">Collection</td><td class="tool">Roboflow Universe + customer pilots</td><td>Raw video + frame samples</td></tr>
+      <tr><td class="layer">Annotation</td><td class="tool">Roboflow / CVAT (open source)</td><td>YOLO-format labels (.txt)</td></tr>
+      <tr><td class="layer">Curation</td><td class="tool">FiftyOne (optional)</td><td>Slice analysis, dedup, leakage check</td></tr>
+      <tr><td class="layer">Versioning</td><td class="tool">DVC + S3/MinIO remote</td><td>Pinned dataset hashes per release</td></tr>
+      <tr><td class="layer">Split</td><td class="tool">scripts/split_dataset.py</td><td>train/val/test (70/15/15, by camera)</td></tr>
+      <tr><td class="layer">Training</td><td class="tool">ultralytics + W&amp;B logger</td><td>Best.pt + run metadata</td></tr>
+      <tr><td class="layer">Evaluation</td><td class="tool">vyse/ml/eval_harness.py</td><td>mAP@50, per-class P/R, EAR-recall, latency</td></tr>
+      <tr><td class="layer">Export</td><td class="tool">export_onnx.py → export_trt.py</td><td>.onnx, .engine artifacts</td></tr>
+      <tr><td class="layer">Registry</td><td class="tool">Tagged git release + DVC pull</td><td>Reproducible model bundle</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Recommended Public Datasets (v1)</h3>
+  <ul>
+    <li><strong>CHV (Color Helmet and Vest):</strong> ~2,500 images, helmets + vests in construction settings.</li>
+    <li><strong>SHEL5K:</strong> 5,000 images, hard-hat focus, mixed lighting.</li>
+    <li><strong>Roboflow Construction Safety:</strong> ~10,000 labeled images, mixed PPE classes — best single starter dataset.</li>
+    <li><strong>NTHU Drowsy Driver Dataset:</strong> Annotated drowsiness for EAR threshold tuning.</li>
+    <li><strong>WIDER FACE:</strong> Generic face dataset for robustness against helmet+mask occlusion.</li>
+  </ul>
+
+  <h3>Drift Detection &amp; Retraining Loop</h3>
+  <ul>
+    <li><strong>Confidence histogram:</strong> Analytics Agent logs detection-confidence histogram per class per day. If mean drops &gt;10% week-over-week, fire <code>MODEL_DRIFT</code> alert.</li>
+    <li><strong>Acknowledge-rate gap:</strong> If &gt;30% of HIGH incidents in a zone are dismissed by safety manager, the rule or model in that zone is mis-calibrated — flag for review.</li>
+    <li><strong>Per-camera health dashboard:</strong> FPS, missed-frame rate, average bbox count — anomalies flag camera-specific issues (lighting change, lens dirty, angle shifted).</li>
+    <li><strong>Hard-negative mining:</strong> Frames where Risk Agent rejected a Vision detection are saved to <code>data/hard_negatives/</code> for the next fine-tune cycle.</li>
+  </ul>
+
+  <h3>Evaluation Harness</h3>
+  <p>Every model release must pass:</p>
+  <ul>
+    <li>mAP@50 ≥ 0.88 on held-out PPE test set</li>
+    <li>Per-class precision ≥ 0.85 for helmet, vest (false-positive on safety gear is unacceptable)</li>
+    <li>EAR drowsiness recall ≥ 0.95 on NTHU subset</li>
+    <li>p99 inference latency ≤ tier target (80ms GPU / 250ms CPU)</li>
+    <li>No regression &gt;2pp on prior release benchmarks</li>
+  </ul>
+</section>
+
+<!-- 21. Design System & Brand Identity -->
+<section id="design-system">
+  <h2><span class="section-num">21</span> Design System &amp; Brand Identity</h2>
+  <p>Vyse's UI exists to make safety managers trust an AI's judgment about life-or-death events. That means dense-but-calm, dark-first, with motion reserved for what actually matters. The visual reference points are Linear (information density), Vercel (clarity), Datadog (incident-grade context), and Watchtower (camera-first layout).</p>
+
+  <h3>Brand Pillars</h3>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>Vigilant, Not Anxious</h4>
+      <p>Critical alerts pulse; ambient operation is silent. Color and motion are budgeted — a CRITICAL incident must feel different from a HIGH.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Information Dense</h4>
+      <p>Safety managers monitor multiple zones simultaneously. The UI shows more per screen than competitors without becoming noise — built for the operator, not the screenshot.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Explainable</h4>
+      <p>Every alert traces back to a rule + confidence + window. The UI surfaces this on demand, not buried.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Keyboard-First</h4>
+      <p>j/k to navigate incidents, x to acknowledge, e to escalate, / to search. Power users never leave the keyboard.</p>
+    </div>
+  </div>
+
+  <h3>Color Palette</h3>
+  <table class="tech-table">
+    <thead><tr><th>Token</th><th>Hex</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td class="tool">--vyse-bg</td><td>#0a0c10</td><td>Page background (dark mode default)</td></tr>
+      <tr><td class="tool">--vyse-surface</td><td>#11141a</td><td>Cards, panels, drawer surfaces</td></tr>
+      <tr><td class="tool">--vyse-surface-2</td><td>#181c24</td><td>Elevated elements, hover state</td></tr>
+      <tr><td class="tool">--vyse-border</td><td>#252a35</td><td>Dividers, card borders</td></tr>
+      <tr><td class="tool">--vyse-text</td><td>#e6e8ee</td><td>Primary text</td></tr>
+      <tr><td class="tool">--vyse-text-muted</td><td>#8b93a5</td><td>Secondary text</td></tr>
+      <tr><td class="tool">--vyse-brand</td><td>#3b82f6</td><td>Primary brand (signal blue)</td></tr>
+      <tr><td class="tool">--vyse-accent</td><td>#f5c842</td><td>Accent / highlights (warning amber)</td></tr>
+      <tr><td class="tool">--sev-low</td><td>#10b981</td><td>LOW severity (informational green)</td></tr>
+      <tr><td class="tool">--sev-medium</td><td>#f59e0b</td><td>MEDIUM severity (caution amber)</td></tr>
+      <tr><td class="tool">--sev-high</td><td>#f97316</td><td>HIGH severity (action orange)</td></tr>
+      <tr><td class="tool">--sev-critical</td><td>#ef4444</td><td>CRITICAL severity (alarm red, pulses)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Typography</h3>
+  <ul>
+    <li><strong>Display / Body:</strong> Inter Variable (400, 500, 600, 700) — clean, dense, free.</li>
+    <li><strong>Mono:</strong> JetBrains Mono — IDs, timestamps, code blocks, technical metadata.</li>
+    <li><strong>Scale:</strong> 11px (metadata) / 13px (body) / 15px (h4) / 18px (h3) / 24px (h2) / 32px (h1).</li>
+    <li><strong>Line-height:</strong> 1.5 body, 1.25 headings, 1.65 prose.</li>
+  </ul>
+
+  <h3>Motion Language (Framer Motion)</h3>
+  <ul>
+    <li><strong>Page transitions:</strong> 180ms ease-out, fade + 4px y-translate. Never longer than 200ms.</li>
+    <li><strong>Incident card enter:</strong> Slide-in from right + scale 0.98→1, 220ms spring. New incidents momentarily glow at their severity color.</li>
+    <li><strong>CRITICAL alert banner:</strong> 1.2s pulse (red glow + 2% scale) until acknowledged. Looped, not animated-out.</li>
+    <li><strong>Live feed bbox redraw:</strong> No animation — instant. Animating safety overlays creates dangerous perceptual lag.</li>
+    <li><strong>Drawer slide:</strong> 240ms ease-out with backdrop fade. Esc closes.</li>
+  </ul>
+
+  <h3>Component Patterns (shadcn-built)</h3>
+  <ul>
+    <li><code>&lt;IncidentCard /&gt;</code> — severity-bar left edge, type icon, zone chip, timestamp, snapshot thumbnail, "acknowledge" hover-action.</li>
+    <li><code>&lt;LiveFeedTile /&gt;</code> — camera ID badge top-left, FPS + EAR readouts bottom-left, severity-state border tint.</li>
+    <li><code>&lt;KPICard /&gt;</code> — single big number, label, delta-vs-yesterday sparkline.</li>
+    <li><code>&lt;ZonePill /&gt;</code> — zone name with risk-tier dot.</li>
+    <li><code>&lt;SeverityBadge /&gt;</code> — pill with severity color + label, uppercase mono.</li>
+  </ul>
+
+  <h3>Logo &amp; Mark</h3>
+  <p>Mark is a hexagonal eye (⬡-glyph already used in §07 competitive table) — single-stroke, parametric, scales from 16px favicon to a 200px header. Concept: "the eye that doesn't blink." Wordmark in Inter SemiBold tracked +20.</p>
+</section>
+
+<!-- 22. Integrations Catalog -->
+<section id="integrations">
+  <h2><span class="section-num">22</span> Integrations Catalog</h2>
+  <p>Vyse's open architecture means every integration is a Python module in <code>vyse/integrations/</code> implementing a common <code>AlertChannel</code> protocol. Adding one is a single-file change.</p>
+
+  <h3>v1.0 Ships With</h3>
+  <table class="tech-table">
+    <thead><tr><th>Category</th><th>Integration</th><th>Direction</th><th>Auth</th></tr></thead>
+    <tbody>
+      <tr><td class="layer">Chat</td><td class="tool">Slack (webhook)</td><td>outbound alert</td><td>incoming-webhook URL</td></tr>
+      <tr><td class="layer">Chat</td><td class="tool">Microsoft Teams</td><td>outbound alert</td><td>incoming-webhook URL</td></tr>
+      <tr><td class="layer">Email</td><td class="tool">SMTP (any provider)</td><td>outbound alert</td><td>SMTP creds</td></tr>
+      <tr><td class="layer">Generic</td><td class="tool">Webhook (HTTP POST)</td><td>outbound alert</td><td>Bearer token (optional)</td></tr>
+      <tr><td class="layer">Stream</td><td class="tool">RTSP / RTMP cameras</td><td>inbound video</td><td>basic auth, IP-allowlist</td></tr>
+      <tr><td class="layer">Stream</td><td class="tool">USB Webcam / Video file</td><td>inbound video</td><td>n/a</td></tr>
+      <tr><td class="layer">Observability</td><td class="tool">Prometheus /metrics</td><td>scrape</td><td>API key</td></tr>
+    </tbody>
+  </table>
+
+  <h3>v1.1 Roadmap</h3>
+  <ul>
+    <li><strong>SMS / Voice — Twilio:</strong> Critical incidents in low-staff hours.</li>
+    <li><strong>Paging — PagerDuty:</strong> EHS on-call rotation integration.</li>
+    <li><strong>SIEM — Splunk / Datadog / Sentinel:</strong> Forward incident events to enterprise SOC.</li>
+    <li><strong>HRIS — BambooHR / Workday (read-only):</strong> Link tracked workers to records for shift-level compliance reports (opt-in, per worker consent).</li>
+    <li><strong>Object Storage — S3 / GCS / Azure Blob:</strong> Long-term snapshot archival.</li>
+    <li><strong>Camera VMS — Milestone XProtect, Genetec:</strong> Pull-feed integration for sites with existing video-management systems.</li>
+  </ul>
+
+  <h3>AlertChannel Protocol (Python)</h3>
+  <pre><code>from typing import Protocol
+from vyse.core.models import Incident
+
+class AlertChannel(Protocol):
+    name: str
+    severity_threshold: Severity
+
+    async def dispatch(self, incident: Incident) -&gt; DispatchResult: ...
+    async def test(self) -&gt; bool: ...      # used by Settings UI</code></pre>
+</section>
+
+<!-- 23. Compliance Mapping -->
+<section id="compliance">
+  <h2><span class="section-num">23</span> Compliance Mapping</h2>
+  <p>Vyse's value to enterprise customers is not just incident prevention — it's audit-grade evidence of a working safety program. Each detection type maps to specific regulatory citations.</p>
+
+  <h3>OSHA — U.S. Workplace Safety</h3>
+  <table class="tech-table">
+    <thead><tr><th>Vyse Detection</th><th>OSHA Citation</th><th>What Vyse Proves</th></tr></thead>
+    <tbody>
+      <tr><td>PPE — head protection</td><td>29 CFR 1910.135 / 1926.100</td><td>Helmets worn in designated zones</td></tr>
+      <tr><td>PPE — high-visibility vest</td><td>29 CFR 1926.201 (traffic)</td><td>Vest compliance near vehicles</td></tr>
+      <tr><td>PPE — eye protection</td><td>29 CFR 1910.133</td><td>Goggles in flying-particle zones</td></tr>
+      <tr><td>PPE — hand protection</td><td>29 CFR 1910.138</td><td>Glove usage in cut/chemical zones</td></tr>
+      <tr><td>Restricted zone breach</td><td>29 CFR 1910.146 (confined space)</td><td>Unauthorized entry events</td></tr>
+      <tr><td>Drowsiness near machinery</td><td>29 CFR 1910.132 (general duty)</td><td>Fatigue-related risk events</td></tr>
+      <tr><td>Phone in operations zone</td><td>Site policy (general duty clause)</td><td>Distraction events</td></tr>
+    </tbody>
+  </table>
+
+  <h3>International Standards</h3>
+  <ul>
+    <li><strong>ISO 45001 (OH&amp;S Management Systems):</strong> Vyse provides Clause 9.1 — Monitoring, Measurement, Analysis &amp; Evaluation — automatic evidence collection.</li>
+    <li><strong>ILO C155 / R164:</strong> Workplace safety convention — Vyse exports compliance summary in required reporting format.</li>
+    <li><strong>EU Machinery Directive 2006/42/EC:</strong> Risk-assessment documentation generated from incident logs.</li>
+    <li><strong>Pakistan Industrial Relations Ordinance / Sindh Factories Act:</strong> PPE compliance evidence for labor-department inspections.</li>
+  </ul>
+
+  <h3>Data Privacy</h3>
+  <ul>
+    <li><strong>GDPR (EU) — Art. 6(1)(f) legitimate interest:</strong> Workplace safety is established lawful basis. Vyse documents this in DPA template.</li>
+    <li><strong>GDPR Art. 9 — biometric:</strong> Drowsiness uses landmark geometry, NOT facial identity. EAR is a scalar, not biometric ID. Confirmed by external counsel before pilot.</li>
+    <li><strong>CCPA / CPRA:</strong> Worker-notice template provided. Aggregate analytics by default; identity-linking is opt-in only.</li>
+    <li><strong>Pakistan PDPB (when enacted):</strong> On-prem default deployment satisfies data-localization requirement.</li>
+    <li><strong>Default retention:</strong> Raw frames 0 days, snapshots 30 days, incident records 2 years (configurable per customer DPA).</li>
+  </ul>
+
+  <h3>Audit Export Format</h3>
+  <p>The Analytics Agent generates a signed monthly PDF + JSON bundle containing: total worker-hours observed, % compliant per zone per shift, incident count by severity, mean acknowledgement time, rules in force, model version. Bundle is hash-chained for tamper evidence.</p>
+</section>
+
+<!-- 24. Acceptance Criteria · Definition of Done -->
+<section id="acceptance">
+  <h2><span class="section-num">24</span> Acceptance Criteria · Definition of Done</h2>
+  <p>Each phase in the roadmap has unambiguous "done" criteria. A phase is closed only when every checkbox below it passes.</p>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 0 — Foundation</div>
+      <div class="phase-timeline">DoD</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li><code>python -m vyse</code> imports without error</li>
+        <li><code>pytest -q</code> passes (even if 0 tests) — pytest config valid</li>
+        <li><code>core.models</code> dataclasses round-trip serialize via <code>asdict()</code> + JSON</li>
+        <li><code>core.config.load_settings()</code> loads <code>config/settings.yaml</code> + validates against Pydantic schema</li>
+        <li>YOLOv8n + MediaPipe FaceMesh both load and run inference on a test JPG (verified in <code>tests/smoke/</code>)</li>
+        <li>Repo pushed to GitHub with README, LICENSE, .gitignore, working pre-commit hooks (ruff + black + mypy)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 1 — Vision Agent MVP</div>
+      <div class="phase-timeline">DoD</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li>Vision Agent processes webcam at ≥15 FPS on dev machine, &gt;10 FPS with all detectors enabled</li>
+        <li>Emits <code>DetectionEvent</code> objects with correct schema for all 6 detection types (person, helmet, no-helmet, vest, phone, ear_low)</li>
+        <li>ByteTrack assigns persistent <code>track_id</code> across ≥30 consecutive frames in test video</li>
+        <li>EAR computation produces values in [0.10, 0.45] range on normal faces; drops &lt;0.25 reliably on closed-eye test frames</li>
+        <li>Zone breach test: synthetic person bbox inside / outside polygon produces correct breach flag</li>
+        <li>Demo video recorded: webcam feed with bboxes + EAR + zone overlay, &lt;2 min, suitable for README</li>
+        <li>Unit-test coverage ≥70% on <code>detectors/</code> module</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 2 — Risk + Alert</div>
+      <div class="phase-timeline">DoD</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li>YAML rule engine evaluates 3+ rules from config and produces <code>Incident</code> objects matching expected schema</li>
+        <li><strong>False-positive proof test:</strong> A 2-second helmet-removal in synthetic event stream produces ZERO incidents</li>
+        <li><strong>True-positive proof test:</strong> A 10-second sustained no-helmet produces exactly ONE incident (deduplication works)</li>
+        <li>Severity escalation works: machinery-zone no-helmet upgrades HIGH → CRITICAL per <code>rules.yaml</code></li>
+        <li>Slack/Teams webhook dispatch verified end-to-end with a real channel</li>
+        <li>Orchestrator survives Vision Agent crash (TaskGroup restart) without losing Alert Agent</li>
+        <li>Graceful shutdown drains queues on SIGTERM — no incidents lost</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 3 — API + DB + Analytics</div>
+      <div class="phase-timeline">DoD</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li><code>docker-compose up</code> brings API + Postgres + Adminer all-green</li>
+        <li>Alembic migrations apply cleanly from empty DB</li>
+        <li>OpenAPI docs at <code>/docs</code> render and all endpoints listed in §13 are implemented</li>
+        <li>API integration test: incident written by Analytics Agent retrievable via <code>GET /api/v1/incidents</code></li>
+        <li>WebSocket <code>/ws/stream/incidents</code> pushes incidents within 200ms of creation</li>
+        <li>Prometheus <code>/metrics</code> exposes ≥10 named series (queue depths, FPS, inference latency, etc.)</li>
+        <li>API p99 latency &lt;100ms on 10K-row incidents table (verified via <code>scripts/benchmark.py</code>)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-name">Phase 4 — Dashboard + Polish</div>
+      <div class="phase-timeline">DoD</div>
+    </div>
+    <div class="phase-body">
+      <ul>
+        <li>All 6 pages render with mocked + live data: Overview, Live, Incidents, Analytics, Rules, Settings</li>
+        <li>Lighthouse score ≥95 on Performance + Accessibility on Overview page</li>
+        <li>WCAG AA contrast passes on all severity colors (verified by automated axe-core run in CI)</li>
+        <li>Keyboard shortcuts work: j/k navigate incidents, x acks, e escalates, / opens search</li>
+        <li>Live-feed-to-incident demo: helmet violation triggers an alert card to appear in dashboard within 1s</li>
+        <li>README has hero GIF, badges, quickstart, architecture diagram, demo-video link, contribution guide link</li>
+        <li>GitHub Actions CI green: lint + unit + integration + dashboard build on every PR</li>
+        <li>YOLOv8 fine-tuned on Roboflow Construction Safety; eval harness ≥0.88 mAP@50</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 25. Glossary -->
+<section id="glossary">
+  <h2><span class="section-num">25</span> Glossary</h2>
+  <table class="tech-table">
+    <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td class="tool">EAR</td><td>Eye Aspect Ratio — ratio of vertical to horizontal eye landmarks. Drops sharply during blinks &amp; sustained drops indicate drowsiness.</td></tr>
+      <tr><td class="tool">PPE</td><td>Personal Protective Equipment — helmets, vests, gloves, goggles, etc.</td></tr>
+      <tr><td class="tool">YOLOv8</td><td>"You Only Look Once" v8 — Ultralytics' real-time object detection model family (n/s/m/l/x variants).</td></tr>
+      <tr><td class="tool">MediaPipe</td><td>Google's framework for on-device ML pipelines. Face Mesh outputs 468 facial landmarks.</td></tr>
+      <tr><td class="tool">ByteTrack</td><td>Multi-object tracking algorithm. Assigns persistent IDs to detections across frames.</td></tr>
+      <tr><td class="tool">mAP@50</td><td>Mean Average Precision at IoU=0.50 — standard object-detection accuracy metric.</td></tr>
+      <tr><td class="tool">IoU</td><td>Intersection over Union — bbox overlap metric, defines "match" between predicted and ground-truth boxes.</td></tr>
+      <tr><td class="tool">FPS</td><td>Frames Per Second — pipeline throughput.</td></tr>
+      <tr><td class="tool">RTSP</td><td>Real Time Streaming Protocol — standard IP-camera streaming protocol.</td></tr>
+      <tr><td class="tool">ONNX</td><td>Open Neural Network Exchange — portable model format. Enables CPU and cross-framework deployment.</td></tr>
+      <tr><td class="tool">TensorRT</td><td>NVIDIA's inference optimizer. Produces hardware-specific engines for 2–5× speedups on NVIDIA GPUs/Jetson.</td></tr>
+      <tr><td class="tool">TimescaleDB</td><td>PostgreSQL extension for time-series workloads. Hypertables partition by time automatically.</td></tr>
+      <tr><td class="tool">structlog</td><td>Python structured-logging library. Outputs JSON with bound context per agent.</td></tr>
+      <tr><td class="tool">OSHA</td><td>Occupational Safety and Health Administration — U.S. workplace-safety regulator.</td></tr>
+      <tr><td class="tool">ILO</td><td>International Labour Organization — UN body setting international labor standards.</td></tr>
+      <tr><td class="tool">ISO 45001</td><td>International standard for Occupational Health &amp; Safety management systems.</td></tr>
+      <tr><td class="tool">EHS</td><td>Environment, Health &amp; Safety — corporate function Vyse primarily serves.</td></tr>
+      <tr><td class="tool">VMS</td><td>Video Management System — enterprise camera-management platform (Milestone, Genetec, etc.).</td></tr>
+      <tr><td class="tool">CPEC</td><td>China-Pakistan Economic Corridor — massive infrastructure-construction program, primary Pakistan GTM target.</td></tr>
+      <tr><td class="tool">DVC</td><td>Data Version Control — Git-friendly versioning for large dataset files.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Footer -->
+<div style="text-align:center; padding:2rem 0; font-family:'Courier New',monospace; font-size:11px; color:var(--text-faint); letter-spacing:0.12em;">
+  VYSE PRD v1.0 · CONFIDENTIAL · TAHA ZAIDI · FAST-NUCES KARACHI · 2026<br>
+  <span style="margin-top:6px; display:block;">github.com/taha-zaidii/Vyse</span>
+</div>
+
+</body>
+</html>

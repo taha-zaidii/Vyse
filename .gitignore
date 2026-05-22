@@ -1,0 +1,65 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# --- Node ---
+node_modules/
+.next/
+out/
+dist/
+.npm/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Vyse-specific ---
+.env
+.env.local
+*.db
+*.sqlite
+vyse.db*
+snapshots/
+runs/
+wandb/
+
+# Large binaries — versioned via DVC instead
+data/raw/**
+data/annotated/**
+data/splits/**
+data/hard_negatives/**
+models/*.pt
+models/*.onnx
+models/*.engine
+models/exports/*
+
+# Keep dir placeholders
+!data/.gitkeep
+!models/.gitkeep
+!data/*/.gitkeep
+!models/exports/.gitkeep
+
+# Logs
+*.log
+logs/

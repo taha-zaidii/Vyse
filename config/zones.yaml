@@ -1,0 +1,31 @@
+# Vyse — Zone Polygon Definitions
+# Each polygon is per-camera and expressed in normalized [0..1] coords so it
+# scales with any frame resolution. Risk tiers: "general", "machinery", "restricted".
+
+zones:
+  - name: machinery
+    camera_id: cam-1
+    risk_tier: machinery
+    points:
+      - [0.30, 0.40]
+      - [0.85, 0.40]
+      - [0.90, 0.95]
+      - [0.25, 0.95]
+
+  - name: walkway
+    camera_id: cam-1
+    risk_tier: general
+    points:
+      - [0.00, 0.10]
+      - [0.30, 0.10]
+      - [0.25, 0.40]
+      - [0.00, 0.40]
+
+  - name: restricted_control_room
+    camera_id: cam-2
+    risk_tier: restricted
+    points:
+      - [0.10, 0.20]
+      - [0.55, 0.20]
+      - [0.55, 0.85]
+      - [0.10, 0.85]

@@ -1,0 +1,42 @@
+# Vyse — Runtime Settings (cameras + alert channels)
+# Env-level overrides (DB URL, API port, etc.) live in .env / Settings.
+
+cameras:
+  - id: cam-1
+    name: Floor — Machinery Bay
+    url: "0"             # "0" = first USB webcam. Use rtsp://… for IP cams.
+    enabled: true
+    target_fps: 15
+    zones: [machinery, walkway]
+
+  - id: cam-2
+    name: Control Room
+    url: "rtsp://example.local/stream2"
+    enabled: false
+    target_fps: 10
+    zones: [restricted_control_room]
+
+channels:
+  - name: console
+    enabled: true
+    severity_threshold: LOW
+    options: {}
+
+  - name: slack
+    enabled: false
+    severity_threshold: HIGH
+    options:
+      url: "https://hooks.slack.com/services/T000/B000/XXX"
+
+  - name: email
+    enabled: false
+    severity_threshold: CRITICAL
+    options:
+      host: smtp.gmail.com
+      port: 587
+      username: noreply@example.com
+      password: app-password-here
+      sender: noreply@example.com
+      recipients:
+        - safety@example.com
+      use_tls: true
