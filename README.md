@@ -1,4 +1,4 @@
-# Vyse
+# Vyse - Pakistan's First Real-Time AI Workplace Safety Intelligence System
 
 Real-time computer vision for workplace safety. Vyse ingests live camera feeds, detects PPE violations, drowsiness, restricted-zone breaches, and device misuse, and turns thousands of per-frame detections into a handful of acknowledgeable incidents using a four-agent pipeline with temporal rules.
 
